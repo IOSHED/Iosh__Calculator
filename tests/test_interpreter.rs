@@ -14,10 +14,10 @@ macro_rules! testy {
 
         let mut errors = Vec::new();
         
-        match parser::ExprParser::new().parse(&mut errors, $expected) {
+        match parser::CalcParser::new().parse(&mut errors, $expected) {
             Ok(ast) => {
                 let mut interpreter = Interpreter::new();
-                match interpreter.eval(&ast, $expected) {
+                match interpreter.eval(ast, $expected) {
                     Ok(n) => {
                         assert_eq!(
                             $received,

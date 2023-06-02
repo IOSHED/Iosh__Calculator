@@ -3,34 +3,29 @@ use std::fmt::{Debug, Error, Formatter};
 use crate::errors::CalcErrors;
 
 
+pub enum Calc<'input> {
+    InitVariable(&'input str, Box<Expr<'input>>),
+    Expr(Box<Expr<'input>>),
+}
+
+
+impl<'input> Debug for Calc<'input> {
+    fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
+        use self::Calc::*;
+        match self {
+            InitVariable(name, ref expr) => write!(fmt, "{name} = {expr:?}"),
+            Expr(expr) => write!(fmt, "{expr:?}"),
+        }
+    }
+}
+
+
 pub enum Expr<'input> {
     Number(f64),
     Variable(&'input str),
-    InitVariable(&'input str, Box<Expr<'input>>),
     Op(Box<Expr<'input>>, Opcode, Box<Expr<'input>>),
     Func(FuncName, Box<Expr<'input>>),
     Error(CalcErrors),
-}
-
-#[derive(Copy, Clone)]
-pub enum Opcode {
-    Mul,
-    Div,
-    Mod,
-    IntDiv,
-
-    Add,
-    Sub,
-}
-
-
-#[derive(Copy, Clone)]
-pub enum FuncName {
-    Sin,
-    Cos,
-
-    Tg,
-    Ctg,
 }
 
 
@@ -43,9 +38,20 @@ impl<'input> Debug for Expr<'input> {
             Func(func, ref args) => write!(fmt, "{func:?}({args:?})"),
             Error(msg) => write!(fmt, "error: {msg:?}"),
             Variable(name) => write!(fmt, "{name:?}"),
-            InitVariable(name, ref expr) => write!(fmt, "{name} = {expr:?}"),
         }
     }
+}
+
+
+#[derive(Copy, Clone)]
+pub enum Opcode {
+    Mul,
+    Div,
+    Mod,
+    IntDiv,
+
+    Add,
+    Sub,
 }
 
 
@@ -61,6 +67,16 @@ impl Debug for Opcode {
             Sub => write!(fmt, "-"),
         }
     }
+}
+
+
+#[derive(Copy, Clone)]
+pub enum FuncName {
+    Sin,
+    Cos,
+
+    Tg,
+    Ctg,
 }
 
 

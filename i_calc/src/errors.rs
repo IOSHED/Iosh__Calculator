@@ -1,7 +1,6 @@
 use std::fmt::{Debug, Error, Formatter};
 
 
-
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum CalcErrors {
     InputTooBig,

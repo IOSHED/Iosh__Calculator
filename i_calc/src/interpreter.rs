@@ -1,5 +1,10 @@
+
 use std::{f64::consts::{PI, E}, collections::BTreeMap, str::FromStr};
-use crate::{ast::{Expr, Opcode, FuncName}, errors::CalcErrors, constante::{SPEED_LIGHT, ACCELERATION_FREE_FALL, GRAVITATIONAL_CONSTANT}};
+use crate::{
+    ast::{Expr, Opcode, FuncName, Calc}, 
+    errors::CalcErrors, 
+    constante::{SPEED_LIGHT, ACCELERATION_FREE_FALL, GRAVITATIONAL_CONSTANT}
+};
 
 
 pub struct Interpreter<'input> {
@@ -12,29 +17,26 @@ pub struct Interpreter<'input> {
 impl<'input> Interpreter<'input> {
 
     pub fn new() -> Self {
+        let constante = BTreeMap::from([
+            ("PI", PI),
+            ("E", E),
+            ("c", SPEED_LIGHT), 
+            ("g", ACCELERATION_FREE_FALL),
+            ("G", GRAVITATIONAL_CONSTANT)
+        ]);
 
         Interpreter { 
             request_historys: BTreeMap::new(),
             variables: BTreeMap::new(),
-            constante: BTreeMap::from([
-                ("PI", PI),
-                ("E", E),
-                ("c", SPEED_LIGHT), 
-                ("g", ACCELERATION_FREE_FALL),
-                ("G", GRAVITATIONAL_CONSTANT)
-            ]), 
+            constante, 
         }
     }
 
 
-    pub fn eval(&mut self, expr: &Expr, input: &str) -> Result<f64, CalcErrors> {
-
-        if let Some(result) = self.request_historys.get(input) {
-            *result
-        } else {
-            let result = self.match_eval(expr);
-            self.request_historys.insert(String::from(input), result);
-            result
+    pub fn eval(&mut self, calc: Calc, input: &str) -> Result<f64, CalcErrors> {
+        match calc {
+            Calc::InitVariable(name, expr) => self.init_variable(name, &expr),
+            Calc::Expr(expr) => self.eval_expr(&expr, input),
         }
     }
 
@@ -61,6 +63,18 @@ impl<'input> Interpreter<'input> {
     }
 
 
+    fn eval_expr(&mut self, expr: &Expr, input: &str) -> Result<f64, CalcErrors> {
+
+        if let Some(result) = self.request_historys.get(input) {
+            *result
+        } else {
+            let result = self.match_eval(expr);
+            self.request_historys.insert(String::from(input), result);
+            result
+        }
+    }
+
+
     fn match_eval(&mut self, expr: &Expr) -> Result<f64, CalcErrors> {
 
         match expr {
@@ -70,8 +84,6 @@ impl<'input> Interpreter<'input> {
             Expr::Func(name, expr) => self.match_func(name, expr),
 
             Expr::Variable(name) => self.match_variable(name),
-
-            Expr::InitVariable(name, expr) => self.init_variable(name, expr),
 
             Expr::Op(left, op, right) => self.match_op(left, op, right),
 

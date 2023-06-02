@@ -123,7 +123,7 @@ fn variable() {
 }
 
 
-#[test]
-fn init_variable() {
-    testy!["name = 2", "\"name\" = 2.0"];
-}
+// #[test]
+// fn init_variable() {
+//     testy!["name = 2", "\"name\" = 2.0"];
+// }

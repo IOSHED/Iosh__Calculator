@@ -1,8 +1,9 @@
 use std::str::FromStr;
-use lalrpop_util::ParseError;
-use lalrpop_util::ErrorRecovery;
-use i_calc::errors::CalcErrors;
-use i_calc::ast::{Expr, Opcode, FuncName};
+use lalrpop_util::{ParseError, ErrorRecovery};
+use i_calc::{
+    errors::CalcErrors,
+    ast::{Expr, Opcode, FuncName, Calc},
+};
 
 
 grammar<'err>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, CalcErrors>>);
@@ -11,6 +12,12 @@ grammar<'err>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, CalcErro
 extern {
     type Error = CalcErrors;
 }
+
+
+pub Calc: Calc<'input> = {
+    Expr => Calc::Expr(<>),
+    InitVariable,
+} 
 
 
 pub Expr: Box<Expr<'input>> = { 
@@ -65,8 +72,8 @@ pub Term: Box<Expr<'input>> = {
 };
 
 
-pub InitVariable: Box<Expr<'input>> = {
-    <n: Variable> "=" <e: Expr> => Box::new(Expr::InitVariable(n, e))
+pub InitVariable: Calc<'input> = {
+    <n: Variable> "=" <e: Expr> => Calc::InitVariable(n, e)
 }
 
 

@@ -52,7 +52,7 @@ fn main() {
         let mut errors = Vec::new();
 
         let ast = {
-            match parser::ExprParser::new().parse(&mut errors, &input) {
+            match parser::CalcParser::new().parse(&mut errors, &input) {
                 Ok(ast) => ast,
                 Err(err) => {
                     println!("Error: {err:?}");
@@ -62,7 +62,7 @@ fn main() {
         };
 
         let result = {
-            match interpreter.eval(&ast, &input) {
+            match interpreter.eval(ast, &input) {
                 Ok(n) => {
                     if n == f64::NAN {
                         continue;
