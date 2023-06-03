@@ -60,6 +60,8 @@ FuncName: FuncName = {
     "sin" => FuncName::Sin,
     "tg" => FuncName::Tg,
     "ctg" => FuncName::Ctg,
+    "sqrt" => FuncName::SquareRoot,
+    "exp" => FuncName::Exponentiation,
 }
 
 

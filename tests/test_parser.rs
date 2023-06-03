@@ -11,7 +11,7 @@ macro_rules! testy {
     ($expected: expr, $received: expr) => {
         let mut errors = Vec::new();
         assert_eq!(
-            &format!("{:?}", parser::ExprParser::new().parse(&mut errors, $expected).unwrap()), 
+            &format!("{:?}", parser::CalcParser::new().parse(&mut errors, $expected).unwrap()), 
             $received
         );
     };
@@ -123,7 +123,13 @@ fn variable() {
 }
 
 
-// #[test]
-// fn init_variable() {
-//     testy!["name = 2", "\"name\" = 2.0"];
-// }
+#[test]
+fn init_variable() {
+    testy!["name = 2", "name = 2.0"];
+
+    testy!["name = 2 - 8", "name = (2.0 - 8.0)"];
+
+    testy!["name = 2 * 7", "name = (2.0 * 7.0)"];
+
+    testy!["name = (1 * 2) / 3", "name = ((1.0 * 2.0) / 3.0)"];
+}

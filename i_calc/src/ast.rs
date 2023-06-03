@@ -72,6 +72,9 @@ impl Debug for Opcode {
 
 #[derive(Copy, Clone)]
 pub enum FuncName {
+    Exponentiation,  // Возмедение в степень.
+    SquareRoot,  // Квадратный корень.
+
     Sin,
     Cos,
 
@@ -87,6 +90,8 @@ impl Debug for FuncName {
             FuncName::Cos => write!(fmt, "cos"),
             FuncName::Tg => write!(fmt, "tg"),
             FuncName::Ctg => write!(fmt, "ctg"),
+            FuncName::Exponentiation => write!(fmt, "exp"),
+            FuncName::SquareRoot => write!(fmt, "sqrt"),
         }
     }
 }

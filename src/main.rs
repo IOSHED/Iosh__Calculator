@@ -7,22 +7,54 @@
 extern crate i_calc;
 
 use std::io::Write;
-use i_calc::{interpreter::Interpreter};
+use i_calc::{interpreter::Interpreter, ast::Calc};
 
 lalrpop_mod!(pub parser);
 
 
-const END_STRING: &str = "\r\n" ;
+const END_STRING: &str = "\r\n";
+const END_PROGRAM: &str = "/end";
+const GET_HISTORY: &str = "/history";
 
 
 fn get_input_user() -> String {
+
     std::io::stdout().flush().unwrap();
-
     let mut input = String::new();
-
     std::io::stdin().read_line(&mut input).unwrap();
 
     input
+}
+
+
+fn get_ast<'input>(input: &'input str) -> Option<Calc<'input>> {
+
+    let mut errors = Vec::new();
+
+    match parser::CalcParser::new().parse(&mut errors, input) {
+        Ok(ast) => Some(ast),
+        Err(err) => {
+            println!("Error: {err:?}");
+            None
+        }
+    }
+}
+
+
+fn get_result(interpreter: &mut Interpreter, ast: Calc, input: &str) -> Option<f64> {
+
+    match interpreter.eval(ast, &input) {
+        Ok(n) => {
+            if n == None {
+                return None
+            } 
+            n
+        },
+        Err(err) => {
+            println!("Error: {err:?}");
+            None
+        }
+    }
 }
 
 
@@ -36,12 +68,12 @@ fn main() {
         let input = {
 
             let str = get_input_user();
-            
+
             // match всех спец. команд для калькулятора. 
             match &str[..] {
                 END_STRING => continue,
-                "/end" => break,
-                "/history" => {
+                END_PROGRAM => break,
+                GET_HISTORY => {
                     println!("{:#?}", interpreter.get_request_historys(8)); 
                     continue;
                 },
@@ -49,34 +81,26 @@ fn main() {
             }
         };
 
-        let mut errors = Vec::new();
 
         let ast = {
-            match parser::CalcParser::new().parse(&mut errors, &input) {
-                Ok(ast) => ast,
-                Err(err) => {
-                    println!("Error: {err:?}");
-                    continue;
-                }
+            let calc = get_ast(&input);
+
+            match calc {
+                Some(ast) => ast,
+                None => continue,
             }
         };
+
 
         let result = {
-            match interpreter.eval(ast, &input) {
-                Ok(n) => {
-                    if n == f64::NAN {
-                        continue;
-                    } else {
-                        n
-                    }
-                },
-                Err(err) => {
-                    println!("Error: {err:?}");
-                    continue;
-                }
+            let res = get_result(&mut interpreter, ast, &input);
+
+            match res {
+                Some(r) => r,
+                None => continue,
             }
         };
 
-        println!("{result:.9}");
+        println!("{result}");
     }
 }

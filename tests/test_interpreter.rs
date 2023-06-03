@@ -1,6 +1,6 @@
 #[macro_use] extern crate lalrpop_util;
 
-use i_calc::interpreter::Interpreter;
+use i_calc::{interpreter::Interpreter};
 
 
 lalrpop_mod!(pub parser);
@@ -12,32 +12,35 @@ macro_rules! testy {
     // received - ожидаемое значение.
     ($expected: expr, $received: expr) => {
 
+        let mut interpreter = Interpreter::new();
+
         let mut errors = Vec::new();
-        
+
         match parser::CalcParser::new().parse(&mut errors, $expected) {
             Ok(ast) => {
-                let mut interpreter = Interpreter::new();
                 match interpreter.eval(ast, $expected) {
-                    Ok(n) => {
-                        assert_eq!(
-                            $received,
-                            format!("{:.9}", n)
-                        )
+                    Ok(result) => {
+                        match result {
+                            Some(result) => assert_eq!(
+                                format!("{:?}", result), 
+                                $received
+                            ),
+                            None => assert_eq!(
+                                "\n",
+                                $received
+                            )
+                        }
                     },
-                    Err(err) => {
-                        assert_eq!(
-                            format!("Error: {err:?}"),
-                            $received
-                        )
-                    }
+                    Err(err) => assert_eq!(
+                        format!("Error: {err:?}"),
+                        $received
+                    )
                 }
             },
-            Err(err) => {
-                assert_eq!(
-                    format!("Error: {:?}", err),
-                    $received
-                )
-            }
+            Err(err) => assert_eq!(
+                format!("Error: {err:?}"),
+                $received
+            )
         }
     };
 }

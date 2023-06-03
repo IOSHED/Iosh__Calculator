@@ -1,5 +1,5 @@
 
-use std::{f64::consts::{PI, E}, collections::BTreeMap, str::FromStr};
+use std::{f64::consts::{PI, E}, collections::BTreeMap};
 use crate::{
     ast::{Expr, Opcode, FuncName, Calc}, 
     errors::CalcErrors, 
@@ -33,10 +33,22 @@ impl<'input> Interpreter<'input> {
     }
 
 
-    pub fn eval(&mut self, calc: Calc, input: &str) -> Result<f64, CalcErrors> {
+    pub fn eval(&mut self, calc: Calc, input: &str) -> Result<Option<f64>, CalcErrors> {
         match calc {
-            Calc::InitVariable(name, expr) => self.init_variable(name, &expr),
-            Calc::Expr(expr) => self.eval_expr(&expr, input),
+            Calc::InitVariable(name, expr) => {
+
+                match self.init_variable(name, &expr) {
+                    Some(err) => Err(err),
+                    None => Ok(None),
+                }
+            },
+            Calc::Expr(expr) => {
+
+                match self.eval_expr(&expr, input) {
+                    Ok(r) => Ok(Some(r)),
+                    Err(err) => Err(err),
+                }
+            },
         }
     }
 
@@ -73,6 +85,23 @@ impl<'input> Interpreter<'input> {
             result
         }
     }
+ 
+
+    fn init_variable(&mut self, name: &str, expr: &Box<Expr>) -> Option<CalcErrors> {
+
+        if None == self.constante.get(name) {
+            
+            match self.match_eval(expr) {
+                Ok(res) => {
+                    self.variables.insert(String::from(name), res);
+                    return None
+                },
+                Err(err) => return Some(err),
+            }
+            
+        }
+        Some(CalcErrors::CannotCreateVariablesWithNameConstant)
+    }
 
 
     fn match_eval(&mut self, expr: &Expr) -> Result<f64, CalcErrors> {
@@ -88,18 +117,6 @@ impl<'input> Interpreter<'input> {
             Expr::Op(left, op, right) => self.match_op(left, op, right),
 
             Expr::Error(err) => Err(*err),
-        }
-    }
-
-
-    fn init_variable(&mut self, name: &str, expr: &Box<Expr>) -> Result<f64, CalcErrors> {
-
-        if None == self.constante.get(name) {
-            let res = self.match_eval(expr)?;
-            self.variables.insert(String::from(name), res);
-            Ok(f64::NAN)
-        } else {
-            Err(CalcErrors::CannotCreateVariablesWithNameConstant)
         }
     }
 
@@ -125,27 +142,23 @@ impl<'input> Interpreter<'input> {
             Opcode::Mul => Ok(left * right),
             Opcode::Div => {
                 let r = left / right;
-                match r {
-                    f64::INFINITY => Err(CalcErrors::DivisionZeroProhibited),
-                    _ => Ok(r)
+                if right == 0.0 {
+                    return Err(CalcErrors::DivisionZeroProhibited)
                 }
+                Ok(r)
             },
+
             Opcode::Mod => Ok(left % right),
             Opcode::IntDiv => {
                 let r = left / right;
-                match r {
-                    f64::INFINITY => Err(CalcErrors::DivisionZeroProhibited),
-                    _ => Ok(r.trunc())
+                if right == 0.0 {
+                    return Err(CalcErrors::DivisionZeroProhibited)
                 }
+                Ok(r.trunc())
             },
+
             Opcode::Add => Ok(left + right),
-            Opcode::Sub => {
-                let r = f64::from_str(&format!("{:.9}", left - right));
-                match r {
-                    Ok(r) => Ok(r),
-                    Err(_) => Err(CalcErrors::UnknownError),
-                }
-            },
+            Opcode::Sub => Ok(left - right),
         }
     }
 
@@ -170,6 +183,16 @@ impl<'input> Interpreter<'input> {
 
             FuncName::Ctg => match self.match_eval(expr) {
                 Ok(a) => Ok(a.cos() / Self::radion_in_degrees(a).sin()),
+                Err(err) => Err(err)
+            },
+
+            FuncName::Exponentiation => match self.match_eval(expr) {
+                Ok(a) => Ok(todo!()),
+                Err(err) => Err(err)
+            },
+
+            FuncName::SquareRoot => match self.match_eval(expr) {
+                Ok(a) => Ok(todo!()),
                 Err(err) => Err(err)
             },
         }
