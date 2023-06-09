@@ -15,14 +15,15 @@ pub enum Expr<'input> {
 impl<'input> Debug for Expr<'input> {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
         use self::Expr::*;
-        match *self {
+        match self {
             Number(n) => write!(fmt, "{:?}", n),
-            Op(ref l, op, ref r) => write!(fmt, "({l:?} {op:?} {r:?})"),
-            Func(func, ref args) => {
+            Op(l, op, r) => write!(fmt, "({l:?} {op:?} {r:?})"),
+            Func(func, args) => {
                 let str = args
-                                    .iter()
-                                    .map(|val| format!("{:?}", val))
-                                    .collect::<Vec<String>>().join(" ");
+                    .iter()
+                    .map(|val| format!("{:?}", val))
+                    .collect::<Vec<String>>()
+                    .join(" ");
                 write!(fmt, "{func:?}({str})")
             },
             Error(msg) => write!(fmt, "Ошибка: {msg:?}"),

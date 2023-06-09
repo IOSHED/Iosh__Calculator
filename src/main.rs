@@ -74,7 +74,7 @@ fn main() {
                 END_STRING => continue,
                 END_PROGRAM => break,
                 GET_HISTORY => {
-                    println!("{:#?}", interpreter.get_request_historys(8)); 
+                    println!("{:#?}", interpreter.get_request_history(8)); 
                     continue;
                 },
                 _ => str

@@ -15,7 +15,7 @@ pub enum CalcErrors {
 
 impl Debug for CalcErrors {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        match *self {
+        match self {
             CalcErrors::InputTooBig => write!(fmt, "Введено слишком большое число."),
 
             CalcErrors::SyntaxError => write!(fmt, "Синтаксическая ошибка."),

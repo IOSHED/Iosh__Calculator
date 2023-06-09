@@ -3,159 +3,158 @@ use std::{f64::consts::{PI, E}, collections::BTreeMap};
 use crate::{
     ast::{expr::Expr, opcode::Opcode, calc::Calc, func::FactoryFunc}, 
     errors::CalcErrors, 
-    constante::{SPEED_LIGHT, ACCELERATION_FREE_FALL, GRAVITATIONAL_CONSTANT}
 };
 
-
+/// A calculator interpreter that can evaluate mathematical expressions and store variables
 pub struct Interpreter<'input> {
-    request_historys: BTreeMap<String, Result<f64, CalcErrors>>,
+    /// A mapping of input strings to their evaluation results
+    request_history: BTreeMap<String, Result<f64, CalcErrors>>,
+    /// A mapping of variable names to their values
     variables: BTreeMap<String, f64>,
-    constante: BTreeMap<&'input str, f64>,
+    /// A mapping of constant names to their values
+    constants: BTreeMap<&'input str, f64>,
 }
 
-
 impl<'input> Interpreter<'input> {
-
+    
+    /// Creates a new `Interpreter` with an empty request history, variable mapping and constant mapping
     pub fn new() -> Self {
-        let constante = BTreeMap::from([
+        
+        const SPEED_LIGHT: f64 = 299792458.0;  // СКОРОСТЬ СВЕТА
+        const ACCELERATION_FREE_FALL: f64 = 9.80665;  // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
+        const GRAVITATIONAL_CONSTANT: f64 = 0.0000000000066720;  // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ 
+
+        let constants = BTreeMap::from([
             ("PI", PI),
             ("E", E),
-            ("c", SPEED_LIGHT), 
+            ("c", SPEED_LIGHT),
             ("g", ACCELERATION_FREE_FALL),
             ("G", GRAVITATIONAL_CONSTANT)
         ]);
 
-        Interpreter { 
-            request_historys: BTreeMap::new(),
+        Interpreter {
+            request_history: BTreeMap::new(),
             variables: BTreeMap::new(),
-            constante, 
+            constants
         }
     }
 
-
+    /// Evaluates a `Calc` expression and returns a `Result` containing the evaluation result or an error
     pub fn eval(&mut self, calc: Calc, input: &str) -> Result<Option<f64>, CalcErrors> {
         match calc {
             Calc::InitVariable(name, expr) => {
-
+                // Initialize a new variable with the given name and expression
                 match self.init_variable(name, &expr) {
                     Some(err) => Err(err),
                     None => Ok(None),
                 }
             },
             Calc::Expr(expr) => {
+                // Evaluate the given expression
                 match self.eval_expr(&expr, input) {
-                    Ok(r) => Ok(Some(r)),
+                    Ok(result) => Ok(Some(result)),
                     Err(err) => Err(err),
                 }
             },
         }
     }
 
-
-    pub fn get_request_historys(&self, to: usize) -> Vec<(String, Result<f64, CalcErrors>)> {
-
-        let vector_requers_history: Vec<(String, Result<f64, CalcErrors>)> = self.request_historys
-            .clone()
-            .into_iter()
-            .map(|(k, v)| (k, v))
-            .collect();
-
-        let mut result_vec = Vec::new();
-
-        for i in 0..to {
-            if i >= vector_requers_history.len() {
-                break;
-            } else {
-                let new_index = vector_requers_history[i].clone();
-                result_vec.push(new_index);
-            }
-        }
-        result_vec
+    /// Returns a history of evaluated inputs and their results, up to a given limit
+    pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<f64, CalcErrors>)> {
+        self.request_history
+            .iter()
+            .take(to)
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect()
     }
 
-
+    /// Evaluates the given `Expr` and returns a `Result` containing the evaluation result or an error
     fn eval_expr(&mut self, expr: &Expr, input: &str) -> Result<f64, CalcErrors> {
-
-        if let Some(result) = self.request_historys.get(input) {
-            *result
-        } else {
-            let result = self.match_eval(expr);
-            self.request_historys.insert(String::from(input), result);
-            result
+        // Check if the evaluation result for this input has already been stored in the request history
+        if let Some(result) = self.request_history.get(input) {
+            return *result;
         }
-    }
- 
 
+        // Evaluate the expression and store the result in the request history
+        let result = expr.evaluate(self)?;
+        self.request_history.insert(String::from(input), Ok(result));
+        Ok(result)
+    }
+
+    /// Initializes a new variable with the given name and expression, returning an error if the name is already a constant
     fn init_variable(&mut self, name: &str, expr: &Box<Expr>) -> Option<CalcErrors> {
-
-        if None == self.constante.get(name) {
-            
-            match self.match_eval(expr) {
-                Ok(res) => {
-                    self.variables.insert(String::from(name), res);
-                    return None
-                },
-                Err(err) => return Some(err),
-            }
-            
+        // Check if the name is already a constant
+        if self.constants.get(name).is_some() {
+            return Some(CalcErrors::CannotCreateVariablesWithNameConstant);
         }
-        Some(CalcErrors::CannotCreateVariablesWithNameConstant)
+
+        // Evaluate the expression and store the result as the value of the variable
+        match expr.evaluate(self) {
+            Ok(result) => {
+                self.variables.insert(name.to_string(), result);
+                None
+            },
+            Err(err) => Some(err),
+        }
     }
+}
 
+/// A trait for types that can be evaluated to a floating point number
+pub trait Evaluatable {
+    /// Evaluates the value of the type using the given `Interpreter`
+    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcErrors>;
+}
 
-    pub fn match_eval(&mut self, expr: &Expr) -> Result<f64, CalcErrors> {
-
-        match expr {
-
+impl<'input> Evaluatable for Expr<'input> {
+    /// Evaluates the value of the expression using the given `Interpreter`
+    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcErrors> {
+        match self {
             Expr::Number(n) => Ok(*n),
-
-            Expr::Func(name, expr) => FactoryFunc::match_(name, expr, self),
-
-            Expr::Variable(name) => self.match_variable(name),
-
-            Expr::Op(left, op, right) => self.match_op(left, op, right),
-
+            Expr::Func(name, expr) => FactoryFunc::match_(
+                name, expr, interpreter
+            ),
+            Expr::Variable(name) => {
+                // Look up the value of the variable in the `Interpreter`'s mapping of variables and constants
+                interpreter.variables.get(*name)
+                    .copied()
+                    .or_else(|| interpreter.constants.get(name).copied())
+                    .ok_or(CalcErrors::CallingNonexistentVariable)
+            },
+            Expr::Op(left, op, right) => op.evaluate(left, right, interpreter),
             Expr::Error(err) => Err(*err),
         }
     }
+}
 
+/// A trait for binary operators that can be evaluated to a floating point number
+pub trait Operation {
+    /// Evaluates the value of the operator applied to the left and right expressions using the given `Interpreter`
+    fn evaluate(&self,left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter) -> Result<f64, CalcErrors>;
+}
 
-    fn match_variable(&self, name: &str) -> Result<f64, CalcErrors> {
+impl Operation for Opcode {
+    /// Evaluates the value of the operator applied to the left and right expressions using the given `Interpreter`
+    fn evaluate(&self, left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter) -> Result<f64, CalcErrors> {
+        // Evaluate the left and right expressions
+        let left = left.evaluate(interpreter)?;
+        let right = right.evaluate(interpreter)?;
 
-        match self.variables.get(name) {
-            Some(n) => Ok(*n),
-            None => match self.constante.get(name) {
-                Some(n) => Ok(*n),
-                None => Err(CalcErrors::CallingNonexistentVariable),
-            } 
-        }
-    }
-
-
-    fn match_op(&mut self, left: &Box<Expr>, op: &Opcode, right: &Box<Expr>) -> Result<f64, CalcErrors> {
-
-        let left = self.match_eval(left)?;
-        let right = self.match_eval(right)?;
-
-        match op {
+        // Apply the operator to the evaluated expressions
+        match self {
             Opcode::Mul => Ok(left * right),
             Opcode::Div => {
-                let r = left / right;
                 if right == 0.0 {
-                    return Err(CalcErrors::DivisionZeroProhibited)
+                    return Err(CalcErrors::DivisionZeroProhibited);
                 }
-                Ok(r)
+                Ok(left / right)
             },
-
             Opcode::Mod => Ok(left % right),
             Opcode::IntDiv => {
-                let r = left / right;
                 if right == 0.0 {
                     return Err(CalcErrors::DivisionZeroProhibited)
                 }
-                Ok(r.trunc())
+                Ok((left / right).trunc())
             },
-
             Opcode::Add => Ok(left + right),
             Opcode::Sub => Ok(left - right),
         }
