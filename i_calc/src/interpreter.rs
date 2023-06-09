@@ -1,7 +1,7 @@
 
 use std::{f64::consts::{PI, E}, collections::BTreeMap};
 use crate::{
-    ast::{Expr, Opcode, FuncName, Calc}, 
+    ast::{expr::Expr, opcode::Opcode, calc::Calc, func::FactoryFunc}, 
     errors::CalcErrors, 
     constante::{SPEED_LIGHT, ACCELERATION_FREE_FALL, GRAVITATIONAL_CONSTANT}
 };
@@ -43,7 +43,6 @@ impl<'input> Interpreter<'input> {
                 }
             },
             Calc::Expr(expr) => {
-
                 match self.eval_expr(&expr, input) {
                     Ok(r) => Ok(Some(r)),
                     Err(err) => Err(err),
@@ -104,13 +103,13 @@ impl<'input> Interpreter<'input> {
     }
 
 
-    fn match_eval(&mut self, expr: &Expr) -> Result<f64, CalcErrors> {
+    pub fn match_eval(&mut self, expr: &Expr) -> Result<f64, CalcErrors> {
 
         match expr {
 
             Expr::Number(n) => Ok(*n),
 
-            Expr::Func(name, expr) => self.match_func(name, expr),
+            Expr::Func(name, expr) => FactoryFunc::match_(name, expr, self),
 
             Expr::Variable(name) => self.match_variable(name),
 
@@ -160,47 +159,5 @@ impl<'input> Interpreter<'input> {
             Opcode::Add => Ok(left + right),
             Opcode::Sub => Ok(left - right),
         }
-    }
-
-
-    fn match_func(&mut self, name: &FuncName, expr: &Expr) -> Result<f64, CalcErrors> {
-
-        match name {
-            FuncName::Sin => match self.match_eval(expr) {
-                Ok(a) => Ok(Self::radion_in_degrees(a).sin()),
-                Err(err) => Err(err)
-            },
-
-            FuncName::Cos => match self.match_eval(expr) {
-                Ok(a) => Ok(Self::radion_in_degrees(a).cos()),
-                Err(err) => Err(err)
-            },
-        
-            FuncName::Tg => match self.match_eval(expr) {
-                Ok(a) => Ok(Self::radion_in_degrees(a).tan()),
-                Err(err) => Err(err)
-            },
-
-            FuncName::Ctg => match self.match_eval(expr) {
-                Ok(a) => Ok(a.cos() / Self::radion_in_degrees(a).sin()),
-                Err(err) => Err(err)
-            },
-
-            FuncName::Exponentiation => match self.match_eval(expr) {
-                Ok(a) => Ok(todo!()),
-                Err(err) => Err(err)
-            },
-
-            FuncName::SquareRoot => match self.match_eval(expr) {
-                Ok(a) => Ok(todo!()),
-                Err(err) => Err(err)
-            },
-        }
-    }
-    
-
-    fn radion_in_degrees(radian: f64) -> f64 {
-
-        (radian * PI) / 180.
     }
 }

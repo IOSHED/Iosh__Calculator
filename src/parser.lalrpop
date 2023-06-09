@@ -2,7 +2,7 @@ use std::str::FromStr;
 use lalrpop_util::{ParseError, ErrorRecovery};
 use i_calc::{
     errors::CalcErrors,
-    ast::{Expr, Opcode, FuncName, Calc},
+    ast::{expr::Expr, opcode::Opcode, func_name::FuncName, calc::Calc},
 };
 
 
@@ -13,11 +13,23 @@ extern {
     type Error = CalcErrors;
 }
 
+// Возвращает вектор, который состояит из нескольких выражений, разделенных запятыми.
+
+Comma<T>: Vec<T> = {
+    <mut v:(<T> ",")*> <e:T?> => match e {
+        None => v,
+        Some(e) => {
+            v.push(e);
+            v
+        }
+    }
+};
+
 
 pub Calc: Calc<'input> = {
     Expr => Calc::Expr(<>),
     InitVariable,
-} 
+};
 
 
 pub Expr: Box<Expr<'input>> = { 
@@ -51,8 +63,11 @@ FactorOp: Opcode = {
 
 
 Func: Box<Expr<'input>> = {
-    <n: FuncName> "(" <e: Expr> ")" => Box::new(Expr::Func(n, e)),
-}
+    <n: FuncName> "(" <e: FuncArgs> ")" => Box::new(Expr::Func(n, e)),
+};
+
+
+FuncArgs: Vec<Box<Expr<'input>>> = Comma<Expr>;
 
 
 FuncName: FuncName = {
@@ -62,7 +77,7 @@ FuncName: FuncName = {
     "ctg" => FuncName::Ctg,
     "sqrt" => FuncName::SquareRoot,
     "exp" => FuncName::Exponentiation,
-}
+};
 
 
 pub Term: Box<Expr<'input>> = {
@@ -76,12 +91,12 @@ pub Term: Box<Expr<'input>> = {
 
 pub InitVariable: Calc<'input> = {
     <n: Variable> "=" <e: Expr> => Calc::InitVariable(n, e)
-}
+};
 
 
 pub Variable: &'input str = {
     r"[A-Za-z]+" => <>
-}
+};
 
 
 pub Num: f64 = {

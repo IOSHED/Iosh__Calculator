@@ -7,7 +7,7 @@
 extern crate i_calc;
 
 use std::io::Write;
-use i_calc::{interpreter::Interpreter, ast::Calc};
+use i_calc::{interpreter::Interpreter, ast::calc::Calc};
 
 lalrpop_mod!(pub parser);
 
