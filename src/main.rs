@@ -13,8 +13,8 @@ lalrpop_mod!(pub parser);
 
 
 const END_STRING: &str = "\r\n";
-const END_PROGRAM: &str = "/end";
-const GET_HISTORY: &str = "/history";
+const END_PROGRAM: &str = "/end\r\n";
+const GET_HISTORY: &str = "/history\r\n";
 
 
 fn get_input_user() -> String {
@@ -64,7 +64,6 @@ fn main() {
 
     loop {
         print!(">>> ");
-
         let input = {
 
             let str = get_input_user();
