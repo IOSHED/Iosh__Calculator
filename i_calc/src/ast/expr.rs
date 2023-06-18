@@ -3,6 +3,7 @@ use crate::{errors::CalcErrors, interpreter::Interpreter};
 use super::{opcode::{Opcode, Operation}, func_name::FuncName, func::FactoryFunc};
 
 
+#[derive(Clone)]
 pub enum Expr<'input> {
     Number(f64),
     Variable(&'input str),

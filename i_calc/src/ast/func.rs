@@ -32,6 +32,26 @@ trait Function {
         }
         Ok(())
     }
+
+    fn check_len_args_or_stand_default_value<'a>(
+        args: &'a [Box<Expr<'a>>], 
+        expects: usize,
+        default_value: Vec<f64>,
+    ) -> Result<Vec<Box<Expr<'a>>>, CalcErrors> {
+
+        let mut new_args = args.to_vec();
+
+        match Self::check_len_args(args, expects) {
+            Ok(_) => return Ok(args.to_vec()),
+            Err(_) => {
+                for j in new_args.len()..expects {
+                    new_args.push(Box::new(Expr::Number(default_value[j])));
+                }
+            },
+        }
+
+        Ok(new_args)
+    }
 }
 
 
@@ -121,8 +141,10 @@ impl AppendArgs for Exponentiation {}
 
 impl Function for Exponentiation {
     fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
-        Self::check_len_args(args, 2)?;
-        let arg = Self::append_args(args, calc)?;
+        let args_add_default = Self::check_len_args_or_stand_default_value(
+            args, 2, vec![0., 2.]
+        )?;
+        let arg = Self::append_args(&args_add_default, calc)?;
         Ok(arg[0].powf(arg[1]))
     }
 }

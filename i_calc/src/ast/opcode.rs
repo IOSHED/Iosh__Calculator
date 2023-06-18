@@ -2,7 +2,7 @@ use std::fmt::{Debug, Error, Formatter};
 
 use crate::{interpreter::Interpreter, errors::CalcErrors};
 
-use super::expr::{Expr, Evaluatable};
+use super::{expr::{Expr, Evaluatable}, operation::FactoryOp};
 
 
 #[derive(Copy, Clone)]
@@ -39,23 +39,6 @@ impl Operation for Opcode {
         let left = left.evaluate(interpreter)?;
         let right = right.evaluate(interpreter)?;
 
-        match self {
-            Opcode::Mul => Ok(left * right),
-            Opcode::Div => {
-                if right == 0.0 {
-                    return Err(CalcErrors::DivisionZeroProhibited);
-                }
-                Ok(left / right)
-            },
-            Opcode::Mod => Ok(left % right),
-            Opcode::IntDiv => {
-                if right == 0.0 {
-                    return Err(CalcErrors::DivisionZeroProhibited)
-                }
-                Ok((left / right).trunc())
-            },
-            Opcode::Add => Ok(left + right),
-            Opcode::Sub => Ok(left - right),
-        }
+        FactoryOp::match_(*self, left, right)
     }
 }
