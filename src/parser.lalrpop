@@ -79,7 +79,6 @@ FuncName: FuncName = {
     "exp" => FuncName::Exponentiation,
 };
 
-
 pub Term: Box<Expr<'input>> = {
     Num => Box::new(Expr::Number(<>)),
     Variable => Box::new(Expr::Variable(<>)),

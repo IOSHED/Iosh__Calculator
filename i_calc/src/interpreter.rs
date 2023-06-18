@@ -16,16 +16,16 @@ impl<'input> Interpreter<'input> {
     
     pub fn new() -> Self {
         
-        const SPEED_LIGHT: f64 = 299792458.0;  // СКОРОСТЬ СВЕТА
-        const ACCELERATION_FREE_FALL: f64 = 9.80665;  // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
-        const GRAVITATIONAL_CONSTANT: f64 = 0.0000000000066720;  // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ 
+        let speed_light: f64 = 299792458.0;  // СКОРОСТЬ СВЕТА
+        let acceleration_free_fall: f64 = 9.80665;  // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
+        let gravitational_constant: f64 = 0.0000000000066720;  // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ 
 
         let constants = BTreeMap::from([
             ("PI", PI),
             ("E", E),
-            ("c", SPEED_LIGHT),
-            ("g", ACCELERATION_FREE_FALL),
-            ("G", GRAVITATIONAL_CONSTANT)
+            ("c", speed_light),
+            ("g", acceleration_free_fall),
+            ("G", gravitational_constant)
         ]);
 
         Interpreter {
@@ -83,7 +83,7 @@ impl<'input> Interpreter<'input> {
     }
 
     fn add_or_change_variable(&mut self, name: &str, result: f64) -> Option<CalcErrors> {
-        *self.variables.entry(name.to_string()).or_insert(result) = result;
+        self.variables.entry(name.to_string()).and_modify(|v| *v = result).or_insert(result);
         None
     }
 }
