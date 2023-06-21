@@ -8,10 +8,11 @@ extern crate i_calc;
 
 mod printer;
 mod io;
+mod reader_file;
 
 use i_calc::{interpreter::Interpreter, ast::calc::Calc};
-
-use crate::io::get_input;
+use printer::{print_start, print_error};
+use io::get_input;
 
 lalrpop_mod!(pub parser);
 
@@ -22,7 +23,7 @@ fn get_ast<'input>(input: &'input str) -> Option<Calc<'input>> {
     match parser::CalcParser::new().parse(&mut errors, input) {
         Ok(ast) => Some(ast),
         Err(err) => {
-            println!("Error: {err:?}");
+            print_error(err);
             None
         }
     }
@@ -38,7 +39,7 @@ fn get_result(interpreter: &mut Interpreter, ast: Calc, input: &str) -> Option<f
             n
         },
         Err(err) => {
-            println!("Error: {err:?}");
+            print_error(err);
             None
         }
     }
@@ -49,7 +50,7 @@ fn main() -> () {
     let mut interpreter = Interpreter::new();
 
     'lp: loop {
-        print!(">>> ");
+        print_start();
 
         let input = match get_input(&mut interpreter) {
             io::Messege::Break => break 'lp,

@@ -7,7 +7,7 @@ use crate::{
 };
 
 pub struct Interpreter<'input> {
-    request_history: BTreeMap<String, Result<f64, CalcErrors>>,
+    pub request_history: BTreeMap<String, Result<f64, CalcErrors>>,
     pub variables: BTreeMap<String, f64>,
     pub constants: BTreeMap<&'input str, f64>,
 }
@@ -55,7 +55,9 @@ impl<'input> Interpreter<'input> {
     pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<f64, CalcErrors>)> {
         self.request_history
             .iter()
-            .take(to)
+            .rev()  
+            .take(to) 
+            .rev()
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect()
     }

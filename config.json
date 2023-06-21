@@ -1,0 +1,11 @@
+
+{
+    "path_file_help": "README.md",
+    "command": {
+        "end": "/end",
+        "help": "/help",
+        "history": "/history",
+        "empty_input": ""
+    },
+    "output_line_history": 10
+}

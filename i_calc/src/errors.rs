@@ -10,6 +10,7 @@ pub enum CalcErrors {
     DivisionZeroProhibited,
     UnknownError,
     IncorrectNumberArguments(usize, usize),
+    CanNotOpenFileWithText
 }
 
 
@@ -32,6 +33,11 @@ impl Debug for CalcErrors {
             CalcErrors::IncorrectNumberArguments(expect, found) => write!(
                 fmt, "Введено неправильное количество аргументов. Ожидалось {found}. Передано {expect}"
             ),
+
+            CalcErrors::CanNotOpenFileWithText => write!(
+                fmt, "Невозможно открыть файл с текстом"
+            ),
+
         }
     }
 }
