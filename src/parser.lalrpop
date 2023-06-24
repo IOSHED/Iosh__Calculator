@@ -1,6 +1,6 @@
 use std::str::FromStr;
 use lalrpop_util::{ParseError, ErrorRecovery};
-use i_calc::{
+use interpreter::{
     errors::CalcErrors,
     ast::{expr::Expr, opcode::Opcode, func_name::FuncName, calc::Calc},
 };
@@ -76,6 +76,7 @@ FuncName: FuncName = {
     "tg" => FuncName::Tg,
     "ctg" => FuncName::Ctg,
     "sqrt" => FuncName::SquareRoot,
+    "rt" => FuncName::SquareRoot,
     "exp" => FuncName::Exponentiation,
 };
 

@@ -154,15 +154,28 @@ pub struct SquareRoot;
 
 impl AppendArgs for SquareRoot {}
 
+impl SquareRoot {
+    fn nth_root(n: f64, a: f64) -> f64 {
+        let eps = 1e-10; // Точность вычисления.
+        let mut x: f64 = 1.0; // Начальное приближение.
+        while (x.powf(n) - a).abs() > eps {
+            x = ((n - 1.0) * x + a / x.powf(n - 1.0)) / n;
+        }
+        x
+    }
+}
+
 impl Function for SquareRoot {
     fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
-        let arg = Self::append_args(args, calc)?;
-        match Self::check_len_args(args, 1) {
-            Ok(_) => Ok(arg[0].sqrt()),
-            Err(_) => {
-                Self::check_len_args(args, 2)?;
-                Err(CalcErrors::UnknownError)
-            }
+        let args_add_default = Self::check_len_args_or_stand_default_value(
+            args, 2, vec![0., 2.]
+        )?;
+        let arg = Self::append_args(&args_add_default, calc)?;
+        let res = Self::nth_root(arg[0], arg[1]);
+
+        if res.is_nan() {
+            return Err(CalcErrors::ImpossibleExtractRootCorrectly);
         }
+        Ok(res)
     }
 }

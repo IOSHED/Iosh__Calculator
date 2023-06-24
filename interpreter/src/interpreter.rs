@@ -1,37 +1,45 @@
 
-use std::{f64::consts::{PI, E}, collections::BTreeMap};
+use std::f64::consts::{PI, E};
+use serde::{Deserialize, Serialize};
 
 use crate::{
     ast::{expr::{Expr, Evaluatable}, calc::Calc}, 
-    errors::CalcErrors, 
+    errors::CalcErrors, config::Config, history::History, variable::Variable, constante::Constant, 
 };
+use crate::traits::{GetResult, RemoveElementIfMaxValue, GetElementByName};
 
-pub struct Interpreter<'input> {
-    pub request_history: BTreeMap<String, Result<f64, CalcErrors>>,
-    pub variables: BTreeMap<String, f64>,
-    pub constants: BTreeMap<&'input str, f64>,
+
+#[derive(Deserialize, Serialize)]
+pub struct Interpreter {
+    pub request_history: Vec<History>,
+    pub variables: Vec<Variable>,
+    pub constants: Vec<Constant>,
+    pub config: Config
 }
 
-impl<'input> Interpreter<'input> {
+impl Interpreter {
     
-    pub fn new() -> Self {
+    pub fn new(config: Config) -> Self {
         
         let speed_light: f64 = 299792458.0;  // СКОРОСТЬ СВЕТА
         let acceleration_free_fall: f64 = 9.80665;  // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
         let gravitational_constant: f64 = 0.0000000000066720;  // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ 
+        let pi: f64 = PI;
+        let e: f64 = E;
 
-        let constants = BTreeMap::from([
-            ("PI", PI),
-            ("E", E),
-            ("c", speed_light),
-            ("g", acceleration_free_fall),
-            ("G", gravitational_constant)
-        ]);
+        let constants = vec!(
+            Constant::new("PI", pi),
+            Constant::new("E", e),
+            Constant::new("c", speed_light),
+            Constant::new("g", acceleration_free_fall),
+            Constant::new("G", gravitational_constant)
+        );
 
         Interpreter {
-            request_history: BTreeMap::new(),
-            variables: BTreeMap::new(),
-            constants
+            request_history: Vec::new(),
+            variables: Vec::new(),
+            constants,
+            config
         }
     }
 
@@ -55,26 +63,21 @@ impl<'input> Interpreter<'input> {
     pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<f64, CalcErrors>)> {
         self.request_history
             .iter()
-            .rev()  
-            .take(to) 
             .rev()
-            .map(|(k, v)| (k.clone(), v.clone()))
+            .take(to)
+            .map(|history| (history.input.clone(), history.result.clone()))
             .collect()
     }
 
     fn eval_expr(&mut self, expr: &Expr, input: &str) -> Result<f64, CalcErrors> {
-        if let Some(result) = self.request_history.get(input) {
-            return *result;
-        }
-
         let result = expr.evaluate(self)?;
-        self.request_history.insert(String::from(input), Ok(result));
+        self.insert_history(input, result);
         Ok(result)
     }
     
     fn init_variable(&mut self, name: &str, expr: &Box<Expr>) -> Option<CalcErrors> {
 
-        if self.constants.get(name).is_some() {
+        if self.constants.get_result(name).is_some() {
             return Some(CalcErrors::CannotCreateVariablesWithNameConstant);
         }
 
@@ -85,7 +88,20 @@ impl<'input> Interpreter<'input> {
     }
 
     fn add_or_change_variable(&mut self, name: &str, result: f64) -> Option<CalcErrors> {
-        self.variables.entry(name.to_string()).and_modify(|v| *v = result).or_insert(result);
+        if let Some(variable) = self.variables.get_element_by_name(name) {
+            if variable.value == result {
+                return None;
+            }
+            variable.value = result;
+            return None;
+        }
+        self.variables.remove_element_if_max_value(self.config.max_number_variable);
+        self.variables.push(Variable::new(name.to_string(), result));
         None
+    }
+
+    fn insert_history(&mut self, input: &str, result: f64) -> () {
+        self.request_history.remove_element_if_max_value(self.config.max_size_history);
+        self.request_history.push(History::new(input, Ok(result)));
     }
 }

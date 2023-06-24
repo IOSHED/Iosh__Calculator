@@ -4,15 +4,17 @@
 
 
 #[macro_use] extern crate lalrpop_util;
-extern crate i_calc;
+#[macro_use] extern crate lazy_static;
+extern crate interpreter;
 
 mod printer;
 mod io;
-mod reader_file;
+mod config;
 
-use i_calc::{interpreter::Interpreter, ast::calc::Calc};
+use config::Config;
+use interpreter::{interpreter::Interpreter, ast::calc::Calc};
 use printer::{print_start, print_error};
-use io::get_input;
+use io::{get_input, load_interpreter};
 
 lalrpop_mod!(pub parser);
 
@@ -45,9 +47,22 @@ fn get_result(interpreter: &mut Interpreter, ast: Calc, input: &str) -> Option<f
     }
 }
 
+fn get_interpreter() -> Interpreter {
+    let instans = Config::get();
+    let config = instans.lock().unwrap();
+
+    match load_interpreter() {
+        Ok(mut i) => {
+            i.config = config.get_config_for_interpreter();
+            i
+        },
+        Err(_) => Interpreter::new(config.get_config_for_interpreter())
+    }
+}
+
 fn main() -> () {
 
-    let mut interpreter = Interpreter::new();
+    let mut interpreter = get_interpreter();
 
     'lp: loop {
         print_start();
@@ -58,24 +73,14 @@ fn main() -> () {
             io::Messege::Ok(input) => input,
         };
 
-
-        let ast = {
-            let calc = get_ast(&input);
-
-            match calc {
-                Some(ast) => ast,
-                None => continue 'lp,
-            }
+        let ast = match get_ast(&input) {
+            Some(ast) => ast,
+            None => continue 'lp,
         };
 
-
-        let result = {
-            let res = get_result(&mut interpreter, ast, &input);
-
-            match res {
-                Some(r) => r,
-                None => continue 'lp,
-            }
+        let result = match get_result(&mut interpreter, ast, &input) {
+            Some(r) => r,
+            None => continue 'lp,
         };
 
         println!("{result}");

@@ -1,5 +1,5 @@
 use std::fmt::{Debug, Error, Formatter};
-use crate::{errors::CalcErrors, interpreter::Interpreter};
+use crate::{errors::CalcErrors, interpreter::Interpreter, traits::GetResult};
 use super::{opcode::{Opcode, Operation}, func_name::FuncName, func::FactoryFunc};
 
 
@@ -39,12 +39,12 @@ impl<'input> Debug for Expr<'input> {
 
 impl<'input> Expr<'input> {
     pub fn get_variable(interpreter: &mut Interpreter, name: &&str) -> Result<f64, CalcErrors> {
-        interpreter.variables.get(*name)
-            .copied()
-            .or_else(|| interpreter.constants.get(name).copied())
+        interpreter.variables.get_result(name)
+            .or_else(|| interpreter.constants.get_result(name))
             .ok_or(CalcErrors::CallingNonexistentVariable)
     }
 }
+
 
 impl<'input> Evaluatable for Expr<'input> {
     fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcErrors> {

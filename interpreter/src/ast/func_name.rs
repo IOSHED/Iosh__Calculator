@@ -16,7 +16,7 @@ pub enum FuncName {
 
 impl Debug for FuncName {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        match *self {
+        match self {
             FuncName::Sin => write!(fmt, "sin"),
             FuncName::Cos => write!(fmt, "cos"),
             FuncName::Tg => write!(fmt, "tg"),

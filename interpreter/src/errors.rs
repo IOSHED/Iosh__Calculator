@@ -1,7 +1,9 @@
 use std::fmt::{Debug, Error, Formatter};
 
+use serde::{Serialize, Deserialize};
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+
+#[derive(Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CalcErrors {
     InputTooBig,
     SyntaxError,
@@ -10,7 +12,8 @@ pub enum CalcErrors {
     DivisionZeroProhibited,
     UnknownError,
     IncorrectNumberArguments(usize, usize),
-    CanNotOpenFileWithText
+    CanNotOpenFileWithText,
+    ImpossibleExtractRootCorrectly
 }
 
 
@@ -38,6 +41,9 @@ impl Debug for CalcErrors {
                 fmt, "Невозможно открыть файл с текстом"
             ),
 
+            CalcErrors::ImpossibleExtractRootCorrectly => write!(
+                fmt, "Нельзя корректно извлечь корень. Проверьте, что число не отрицательно."
+            )
         }
     }
 }

@@ -1,10 +1,8 @@
 #[macro_use] extern crate lalrpop_util;
 
-use i_calc::{interpreter::Interpreter};
-
+use interpreter::{interpreter::Interpreter, config::Config};
 
 lalrpop_mod!(pub parser);
-
 
 macro_rules! testy {
 
@@ -12,7 +10,7 @@ macro_rules! testy {
     // received - ожидаемое значение.
     ($expected: expr, $received: expr) => {
 
-        let mut interpreter = Interpreter::new();
+        let mut interpreter = Interpreter::new(Config::new(50, 50));
 
         let mut errors = Vec::new();
 

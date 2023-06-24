@@ -2,10 +2,10 @@ use std::fmt::Debug;
 
 use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}};
 
-use i_calc::errors::CalcErrors;
-use i_calc::interpreter::Interpreter;
+use interpreter::errors::CalcErrors;
+use interpreter::interpreter::Interpreter;
 
-use crate::reader_file::read_file_help;
+use crate::io::read_file_help;
 
 fn get_len_big_element_in_history(history: &Vec<(String, Result<f64, CalcErrors>)>, min_len: usize) -> usize {
     let mut len_big_element = min_len;
