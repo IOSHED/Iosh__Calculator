@@ -1,49 +1,32 @@
-use std::fmt::{Debug, Error, Formatter};
-
-use serde::{Serialize, Deserialize};
+use thiserror::Error;
 
 
-#[derive(Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub enum CalcErrors {
-    InputTooBig,
+#[derive(Error, Debug)]
+pub enum CalcError {
+    #[error("Input too big: {0}")]
+    InputTooBig(u64),
+
+    #[error("Syntax error")]
     SyntaxError,
-    CallingNonexistentVariable,
+
+    #[error("Calling nonexistent variable: {0}")]
+    CallingNonexistentVariable(String),
+
+    #[error("Cannot create variable with name 'const'")]
     CannotCreateVariablesWithNameConstant,
-    DivisionZeroProhibited,
+
+    #[error("Division by zero")]
+    DivisionByZero,
+
+    #[error("Unknown error")]
     UnknownError,
-    IncorrectNumberArguments(usize, usize),
-    CanNotOpenFileWithText,
-    ImpossibleExtractRootCorrectly
-}
 
+    #[error("Incorrect number of arguments: expected {expected}, found {found}")]
+    IncorrectNumberOfArguments { expected: usize, found: usize },
 
-impl Debug for CalcErrors {
-    fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        match self {
-            CalcErrors::InputTooBig => write!(fmt, "Введено слишком большое число."),
+    #[error("Cannot open file with text: {0}")]
+    CannotOpenFileWithText(String),
 
-            CalcErrors::SyntaxError => write!(fmt, "Синтаксическая ошибка."),
-
-            CalcErrors::CallingNonexistentVariable => write!(fmt, "Вызов несуществующей переменой"),
-
-            CalcErrors::CannotCreateVariablesWithNameConstant => write!(
-                fmt, "Нельзя создавать переменные именем константы."
-            ),
-            CalcErrors::DivisionZeroProhibited => write!(fmt, "Нельзя делить на ноль."),
-
-            CalcErrors::UnknownError => write!(fmt, "Неизвестная ошибка."),
-
-            CalcErrors::IncorrectNumberArguments(expect, found) => write!(
-                fmt, "Введено неправильное количество аргументов. Ожидалось {found}. Передано {expect}"
-            ),
-
-            CalcErrors::CanNotOpenFileWithText => write!(
-                fmt, "Невозможно открыть файл с текстом"
-            ),
-
-            CalcErrors::ImpossibleExtractRootCorrectly => write!(
-                fmt, "Нельзя корректно извлечь корень. Проверьте, что число не отрицательно."
-            )
-        }
-    }
+    #[error("Impossible to extract root correctly")]
+    ImpossibleToExtractRootCorrectly,
 }
