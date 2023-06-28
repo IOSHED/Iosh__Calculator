@@ -5,6 +5,7 @@ use std::{
 
 use interpreter::{errors::CalcError, interpreter::Interpreter};
 use regex::{Captures, Regex};
+use lazy_static::lazy_static;
 
 use crate::{
     config::Config,
