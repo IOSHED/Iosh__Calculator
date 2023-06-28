@@ -1,15 +1,14 @@
-
 use std::{
-    io::{self, Write},
     fs::{self, File},
+    io::{self, Write},
 };
 
-use interpreter::{interpreter::Interpreter, errors::CalcError};
-use regex::{Regex, Captures};
+use interpreter::{errors::CalcError, interpreter::Interpreter};
+use regex::{Captures, Regex};
 
 use crate::{
-    printer::{print_request_history, print_help, print_error},
     config::Config,
+    printer::{print_error, print_help, print_request_history},
 };
 
 pub enum MessageIO<T> {
@@ -21,12 +20,10 @@ pub enum MessageIO<T> {
 lazy_static! {
     static ref RE_END_PROGRAM: String = Config::get().lock().unwrap().command.end.clone();
     static ref RE_END_STR: String = Config::get().lock().unwrap().command.empty_input.clone();
-    static ref RE_GET_HISTORY: Regex = Regex::new(
-        &format!(
-            r"^{}(?:\s+(all|\d+))?$",
-            Config::get().lock().unwrap().command.history.clone()
-        )
-    )
+    static ref RE_GET_HISTORY: Regex = Regex::new(&format!(
+        r"^{}(?:\s+(all|\d+))?$",
+        Config::get().lock().unwrap().command.history.clone()
+    ))
     .unwrap();
     static ref RE_HELP: String = Config::get().lock().unwrap().command.help.clone();
     static ref OUTPUT_LINE_HISTORY: usize = Config::get().lock().unwrap().output_line_history;

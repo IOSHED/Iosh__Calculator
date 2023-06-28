@@ -1,6 +1,9 @@
 use std::fmt::Debug;
 
-use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}};
+use crossterm::{
+    execute,
+    style::{Color, Print, ResetColor, SetForegroundColor},
+};
 
 use interpreter::errors::CalcError;
 use interpreter::interpreter::Interpreter;
@@ -10,23 +13,26 @@ use crate::in_out::read_file_help;
 /// Получение длины самого большого элемента в `History` - Vec<(String, Result<f64, CalcError>)>.
 /// Cчитается даже длина для второй части - Result, перевведёной в тим String.
 /// Не считается длина элемента, если он является ошибкой, то есть Err(_)
-/// 
+///
 /// * `history` - сама история, по кторой будет происводится поиск.
 /// * `min_len` - минимальная значение для длины, которое должно вернуться.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```
 /// let history = vec![
 ///     ("2 + 2".to_string(), Ok(4.0)),
 ///     ("2*2".to_string(), Ok(4.0)),
 /// ];
-/// 
+///
 /// assert_eq(get_len_of_longest_valid_element_in_history(&history, 5), 5);
 /// assert_eq(get_len_of_longest_valid_element_in_history(&history, 1), 3);
 /// ```
 
-fn get_len_of_longest_valid_element_in_history(history: &Vec<(String, Result<f64, CalcError>)>, min_len: usize) -> usize {
+fn get_len_of_longest_valid_element_in_history(
+    history: &Vec<(String, Result<f64, CalcError>)>,
+    min_len: usize,
+) -> usize {
     let mut len_big_element = min_len;
     for (req_str, res) in history {
         let len_str = req_str.len();
@@ -55,10 +61,15 @@ fn check_len_history(interpreter: &mut Interpreter, mut to: usize) -> usize {
 fn print_title(line: &str) -> () {
     execute!(
         std::io::stdout(),
-        SetForegroundColor(Color::Rgb { r: 97, g: 50, b: 58 }),
+        SetForegroundColor(Color::Rgb {
+            r: 97,
+            g: 50,
+            b: 58
+        }),
         Print(format!("{}\n", line.to_uppercase())),
         ResetColor,
-    ).unwrap()
+    )
+    .unwrap()
 }
 
 fn print_numeric(line: &str) -> () {
@@ -70,7 +81,8 @@ fn print_numeric(line: &str) -> () {
         SetForegroundColor(Color::Cyan),
         Print(format!("{}\n", line.get(3..line.len()).unwrap())),
         ResetColor
-    ).unwrap()
+    )
+    .unwrap()
 }
 
 fn print_line(line: &str) -> () {
@@ -79,11 +91,11 @@ fn print_line(line: &str) -> () {
         SetForegroundColor(Color::White),
         Print(format!("{}\n", line)),
         ResetColor,
-    ).unwrap()
+    )
+    .unwrap()
 }
 
 pub fn print_request_history(interpreter: &mut Interpreter, to: usize) -> () {
-
     let to = check_len_history(interpreter, to);
     let mut history = interpreter.get_request_history(to);
     history.reverse();
@@ -99,7 +111,8 @@ pub fn print_request_history(interpreter: &mut Interpreter, to: usize) -> () {
         Print(format!("| {:^width$} | {:^width$} |\n", left, right)),
         Print(format!("|-{:-^width$}-|-{:-^width$}-|\n", "", "")),
         ResetColor,
-    ).unwrap();
+    )
+    .unwrap();
 
     for i in 0..to {
         let (req_str, res) = &history[i];
@@ -107,9 +120,14 @@ pub fn print_request_history(interpreter: &mut Interpreter, to: usize) -> () {
             execute!(
                 std::io::stdout(),
                 SetForegroundColor(Color::Blue),
-                Print(format!("| {:^width$} | {:^width$} |\n", res, req_str.trim_end())),
+                Print(format!(
+                    "| {:^width$} | {:^width$} |\n",
+                    res,
+                    req_str.trim_end()
+                )),
                 ResetColor,
-            ).unwrap();
+            )
+            .unwrap();
         }
     }
 }
@@ -120,7 +138,8 @@ pub fn print_start() -> () {
         SetForegroundColor(Color::Green),
         Print(">>> "),
         ResetColor,
-    ).unwrap()
+    )
+    .unwrap()
 }
 
 pub fn print_error<T: Debug>(err: T) -> () {
@@ -129,10 +148,15 @@ pub fn print_error<T: Debug>(err: T) -> () {
         SetForegroundColor(Color::Red),
         Print("Error: "),
         ResetColor,
-        SetForegroundColor(Color::Rgb { r: 97, g: 50, b: 58 }),
+        SetForegroundColor(Color::Rgb {
+            r: 97,
+            g: 50,
+            b: 58
+        }),
         Print(format!("{err:?}\n")),
         ResetColor,
-    ).unwrap()
+    )
+    .unwrap()
 }
 
 pub fn print_help() -> Result<(), CalcError> {
@@ -146,13 +170,11 @@ pub fn print_help() -> Result<(), CalcError> {
     for line in lines {
         if check_str_char(line, 0, '#') {
             print_title(line)
-        }
-        else if check_str_char(line, 1, '.') {
+        } else if check_str_char(line, 1, '.') {
             print_numeric(line)
-        }
-        else {
+        } else {
             print_line(line)
         }
     }
     Ok(())
-} 
+}

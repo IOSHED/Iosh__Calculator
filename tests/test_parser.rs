@@ -1,39 +1,37 @@
-#[macro_use] extern crate lalrpop_util;
+#[macro_use]
+extern crate lalrpop_util;
 
- 
 lalrpop_mod!(pub parser);
 
-
 macro_rules! testy {
-
     // expected - полученное в результате парсинга значение.
     // received - ожидаемое значение.
     ($expected: expr, $received: expr) => {
         let mut errors = Vec::new();
         assert_eq!(
-            &format!("{:?}", parser::CalcParser::new().parse(&mut errors, $expected).unwrap()), 
+            &format!(
+                "{:?}",
+                parser::CalcParser::new()
+                    .parse(&mut errors, $expected)
+                    .unwrap()
+            ),
             $received
         );
     };
 }
 
 macro_rules! testy_is_ok {
-
     // name - имя структуры lalrpop, с которой будут парсится данные.
     // expected - полученное в результате парсинга значение.
 
     //  проверяем упала ли программа при выполнениии парсинга.
     ($name: ident, $expected: expr) => {
         let mut errors = Vec::new();
-        assert!(
-            parser::$name::new().parse(&mut errors, $expected).is_ok()
-        );
+        assert!(parser::$name::new().parse(&mut errors, $expected).is_ok());
     };
 }
 
-
 macro_rules! testy_struct {
-
     // name - имя структуры lalrpop, с которой будут парсится данные.
     // expected - полученное в результате парсинга значение.
     // received - ожидаемое значение.
@@ -45,7 +43,6 @@ macro_rules! testy_struct {
         );
     };
 }
-
 
 #[test]
 fn number() {
@@ -66,18 +63,16 @@ fn number() {
     testy_struct!(NumParser, "2,", 2.0);
 }
 
-
 #[test]
 fn term() {
     testy_is_ok!(TermParser, "32");
-    
+
     testy_is_ok!(TermParser, "(782)");
 
     testy_is_ok!(TermParser, "((((45342))))");
 
     testy_is_ok!(TermParser, "((234.)");
 }
-
 
 #[test]
 fn expr() {
@@ -89,7 +84,6 @@ fn expr() {
 
     testy!["(1 * 2) / (3 (43))", "((1.0 * 2.0) / (3.0 * 43.0))"];
 }
-
 
 #[test]
 fn func() {
@@ -106,7 +100,6 @@ fn func() {
     testy!["sin(cos(2) * 7)", "sin((cos(2.0) * 7.0))"];
 }
 
-
 #[test]
 fn variable() {
     testy!["name", "\"name\""];
@@ -121,7 +114,6 @@ fn variable() {
 
     testy!["name * sin(foo)", "(\"name\" * sin(\"foo\"))"];
 }
-
 
 #[test]
 fn init_variable() {
