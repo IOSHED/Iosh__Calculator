@@ -1,6 +1,6 @@
 use interpreter::interpreter::Interpreter;
 
-use crate::{config::Config, io::load_interpreter};
+use crate::{config::Config, in_out::load_interpreter};
 
 
 pub fn get_interpreter() -> Interpreter {

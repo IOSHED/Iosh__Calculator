@@ -1,6 +1,6 @@
 use std::fmt::{Debug, Error, Formatter};
 
-use crate::{interpreter::Interpreter, errors::CalcErrors};
+use crate::{interpreter::Interpreter, errors::CalcError};
 
 use super::{expr::{Expr, Evaluatable}, operation::FactoryOp};
 
@@ -17,7 +17,7 @@ pub enum Opcode {
 }
 
 pub trait Operation {
-    fn evaluate(&self,left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter) -> Result<f64, CalcErrors>;
+    fn evaluate(&self,left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter) -> Result<f64, CalcError>;
 }
 
 impl Debug for Opcode {
@@ -35,7 +35,7 @@ impl Debug for Opcode {
 }
 
 impl Operation for Opcode {
-    fn evaluate(&self, left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter) -> Result<f64, CalcErrors> {
+    fn evaluate(&self, left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter) -> Result<f64, CalcError> {
         let left = left.evaluate(interpreter)?;
         let right = right.evaluate(interpreter)?;
 

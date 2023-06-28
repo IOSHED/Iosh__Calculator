@@ -1,5 +1,5 @@
 use std::fmt::{Debug, Error, Formatter};
-use crate::{errors::CalcErrors, interpreter::Interpreter, traits::GetResult};
+use crate::{errors::CalcError, interpreter::Interpreter, traits::GetResult};
 use super::{opcode::{Opcode, Operation}, func_name::FuncName, func::FactoryFunc};
 
 
@@ -9,11 +9,11 @@ pub enum Expr<'input> {
     Variable(&'input str),
     Op(Box<Expr<'input>>, Opcode, Box<Expr<'input>>),
     Func(FuncName, Vec<Box<Expr<'input>>>),
-    Error(CalcErrors),
+    Error(CalcError),
 }
 
 pub trait Evaluatable {
-    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcErrors>;
+    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcError>;
 }
 
 
@@ -38,22 +38,22 @@ impl<'input> Debug for Expr<'input> {
 }
 
 impl<'input> Expr<'input> {
-    pub fn get_variable(interpreter: &mut Interpreter, name: &&str) -> Result<f64, CalcErrors> {
+    pub fn get_variable(interpreter: &mut Interpreter, name: &&str) -> Result<f64, CalcError> {
         interpreter.variables.get_result(name)
             .or_else(|| interpreter.constants.get_result(name))
-            .ok_or(CalcErrors::CallingNonexistentVariable)
+            .ok_or(CalcError::CallingNonexistentVariable(name.to_string()))
     }
 }
 
 
 impl<'input> Evaluatable for Expr<'input> {
-    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcErrors> {
+    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcError> {
         match self {
             Expr::Number(n) => Ok(*n),
             Expr::Func(name, expr) => FactoryFunc::match_(name, expr, interpreter),
             Expr::Variable(name) => Self::get_variable(interpreter, name),
             Expr::Op(left, op, right) => op.evaluate(left, right, interpreter),
-            Expr::Error(err) => Err(*err),
+            Expr::Error(err) => Err(err.clone()),
         }
     }
 }

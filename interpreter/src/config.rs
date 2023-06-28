@@ -12,3 +12,9 @@ impl Config {
         Config { max_size_history, max_number_variable }
     }
 }
+
+impl Default for Config {
+    fn default() -> Self {
+        Self { max_size_history: 50, max_number_variable: 50 }
+    }
+}

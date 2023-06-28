@@ -1,16 +1,16 @@
 use std::str::FromStr;
 use lalrpop_util::{ParseError, ErrorRecovery};
 use interpreter::{
-    errors::CalcErrors,
+    errors::CalcError,
     ast::{expr::Expr, opcode::Opcode, func_name::FuncName, calc::Calc},
 };
 
 
-grammar<'err>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, CalcErrors>>);
+grammar<'err>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, CalcError>>);
 
 
 extern {
-    type Error = CalcErrors;
+    type Error = CalcError;
 }
 
 // Возвращает вектор, который состояит из нескольких выражений, разделенных запятыми.
@@ -85,7 +85,7 @@ pub Term: Box<Expr<'input>> = {
     Variable => Box::new(Expr::Variable(<>)),
     "(" <Expr> ")",
 
-    ! => { errors.push(<>); Box::new(Expr::Error(CalcErrors::SyntaxError)) },
+    ! => { errors.push(<>); Box::new(Expr::Error(CalcError::SyntaxError)) },
 };
 
 
@@ -102,6 +102,6 @@ pub Variable: &'input str = {
 pub Num: f64 = {
     r"[+-]?(\d+[\.\,]?\d*)|([\.\,]\d+)" =>? f64::from_str(&<>.replace(",", ".").to_string())
         .map_err(|_| ParseError::User {
-            error: CalcErrors::InputTooBig
+            error: CalcError::InputTooBig
     }),
 };

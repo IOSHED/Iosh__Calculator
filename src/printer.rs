@@ -2,12 +2,31 @@ use std::fmt::Debug;
 
 use crossterm::{execute, style::{Color, Print, ResetColor, SetForegroundColor}};
 
-use interpreter::errors::CalcErrors;
+use interpreter::errors::CalcError;
 use interpreter::interpreter::Interpreter;
 
-use crate::io::read_file_help;
+use crate::in_out::read_file_help;
 
-fn get_len_big_element_in_history(history: &Vec<(String, Result<f64, CalcErrors>)>, min_len: usize) -> usize {
+/// Получение длины самого большого элемента в `History` - Vec<(String, Result<f64, CalcError>)>.
+/// Cчитается даже длина для второй части - Result, перевведёной в тим String.
+/// Не считается длина элемента, если он является ошибкой, то есть Err(_)
+/// 
+/// * `history` - сама история, по кторой будет происводится поиск.
+/// * `min_len` - минимальная значение для длины, которое должно вернуться.
+/// 
+/// # Example
+/// 
+/// ```
+/// let history = vec![
+///     ("2 + 2".to_string(), Ok(4.0)),
+///     ("2*2".to_string(), Ok(4.0)),
+/// ];
+/// 
+/// assert_eq(get_len_of_longest_valid_element_in_history(&history, 5), 5);
+/// assert_eq(get_len_of_longest_valid_element_in_history(&history, 1), 3);
+/// ```
+
+fn get_len_of_longest_valid_element_in_history(history: &Vec<(String, Result<f64, CalcError>)>, min_len: usize) -> usize {
     let mut len_big_element = min_len;
     for (req_str, res) in history {
         let len_str = req_str.len();
@@ -72,7 +91,7 @@ pub fn print_request_history(interpreter: &mut Interpreter, to: usize) -> () {
     let left = "Result";
     let right = "String";
 
-    let width = get_len_big_element_in_history(&history, left.len() + right.len());
+    let width = get_len_of_longest_valid_element_in_history(&history, left.len() + right.len());
 
     execute!(
         std::io::stdout(),
@@ -116,7 +135,7 @@ pub fn print_error<T: Debug>(err: T) -> () {
     ).unwrap()
 }
 
-pub fn print_help() -> Result<(), CalcErrors> {
+pub fn print_help() -> Result<(), CalcError> {
     fn check_str_char(line: &str, to: usize, ch: char) -> bool {
         line.chars().nth(to) == Some(ch)
     }

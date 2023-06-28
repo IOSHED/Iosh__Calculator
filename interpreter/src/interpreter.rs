@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     ast::{expr::{Expr, Evaluatable}, calc::Calc}, 
-    errors::CalcErrors, config::Config, history::History, variable::Variable, constante::Constant, 
+    errors::CalcError, config::Config, history::History, variable::Variable, constante::Constant, 
 };
 use crate::traits::{GetResult, RemoveElementIfMaxValue, GetElementByName};
 
@@ -43,7 +43,7 @@ impl Interpreter {
         }
     }
 
-    pub fn eval(&mut self, calc: Calc, input: &str) -> Result<Option<f64>, CalcErrors> {
+    pub fn eval(&mut self, calc: Calc, input: &str) -> Result<Option<f64>, CalcError> {
         match calc {
             Calc::InitVariable(name, expr) => {
                 match self.init_variable(name, &expr) {
@@ -60,7 +60,7 @@ impl Interpreter {
         }
     }
 
-    pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<f64, CalcErrors>)> {
+    pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<f64, CalcError>)> {
         self.request_history
             .iter()
             .rev()
@@ -69,16 +69,16 @@ impl Interpreter {
             .collect()
     }
 
-    fn eval_expr(&mut self, expr: &Expr, input: &str) -> Result<f64, CalcErrors> {
+    fn eval_expr(&mut self, expr: &Expr, input: &str) -> Result<f64, CalcError> {
         let result = expr.evaluate(self)?;
         self.insert_history(input, result);
         Ok(result)
     }
     
-    fn init_variable(&mut self, name: &str, expr: &Box<Expr>) -> Option<CalcErrors> {
+    fn init_variable(&mut self, name: &str, expr: &Box<Expr>) -> Option<CalcError> {
 
         if self.constants.get_result(name).is_some() {
-            return Some(CalcErrors::CannotCreateVariablesWithNameConstant);
+            return Some(CalcError::CannotCreateVariablesWithNameConstant);
         }
 
         match expr.evaluate(self) {
@@ -87,7 +87,7 @@ impl Interpreter {
         }
     }
 
-    fn add_or_change_variable(&mut self, name: &str, result: f64) -> Option<CalcErrors> {
+    fn add_or_change_variable(&mut self, name: &str, result: f64) -> Option<CalcError> {
         if let Some(variable) = self.variables.get_element_by_name(name) {
             if variable.value == result {
                 return None;

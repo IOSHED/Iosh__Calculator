@@ -1,4 +1,4 @@
-use crate::{interpreter::Interpreter, errors::CalcErrors}; 
+use crate::{interpreter::Interpreter, errors::CalcError}; 
 
 use super::{expr::{Expr, Evaluatable}, func_name::FuncName}; 
 
@@ -9,7 +9,7 @@ pub struct FactoryFunc;
 
 
 impl FactoryFunc {
-    pub fn match_(name: &FuncName, args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
+    pub fn match_(name: &FuncName, args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcError> {
         match name {
             FuncName::Sin => Sin::ahead(args, calc),
             FuncName::Cos => Cos::ahead(args, calc),
@@ -23,12 +23,12 @@ impl FactoryFunc {
 
 
 trait Function {
-    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors>;
+    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcError>;
 
-    fn check_len_args(args: &[Box<Expr>], expect: usize) -> Result<(), CalcErrors> {
+    fn check_len_args(args: &[Box<Expr>], expect: usize) -> Result<(), CalcError> {
         let len_args = args.len();
         if len_args != expect {
-            return Err(CalcErrors::IncorrectNumberArguments(len_args, expect));
+            return Err(CalcError::IncorrectNumberOfArguments(len_args, expect));
         }
         Ok(())
     }
@@ -37,7 +37,7 @@ trait Function {
         args: &'a [Box<Expr<'a>>], 
         expects: usize,
         default_value: Vec<f64>,
-    ) -> Result<Vec<Box<Expr<'a>>>, CalcErrors> {
+    ) -> Result<Vec<Box<Expr<'a>>>, CalcError> {
 
         let mut new_args = args.to_vec();
 
@@ -56,7 +56,7 @@ trait Function {
 
 
 trait AppendArgs {
-    fn append_args(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<Vec<f64>, CalcErrors> {
+    fn append_args(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<Vec<f64>, CalcError> {
         let mut arg = Vec::new();
         for i in args {
             match i.evaluate(calc) {
@@ -80,7 +80,7 @@ pub struct Sin;
 impl Trigonometry for Sin {}
 
 impl Function for Sin {
-    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
+    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcError> {
         Self::check_len_args(args, 1)?;
         match args[0].evaluate(calc) {
             Ok(res) => Ok(Self::radians_in_degrees(res).sin()),
@@ -95,7 +95,7 @@ pub struct Cos;
 impl Trigonometry for Cos {}
 
 impl Function for Cos {
-    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
+    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcError> {
         Self::check_len_args(args, 1)?;
         match args[0].evaluate(calc) {
             Ok(res) => Ok(Self::radians_in_degrees(res).cos()),
@@ -110,7 +110,7 @@ pub struct Tg;
 impl Trigonometry for Tg {}
 
 impl Function for Tg {
-    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
+    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcError> {
         Self::check_len_args(args, 1)?;
         match args[0].evaluate(calc) {
             Ok(res) => Ok(Self::radians_in_degrees(res).tan()),
@@ -125,7 +125,7 @@ pub struct Ctg;
 impl Trigonometry for Ctg {}
 
 impl Function for Ctg {
-    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
+    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcError> {
         Self::check_len_args(args, 1)?;
         match args[0].evaluate(calc) {
             Ok(res) => Ok(Self::radians_in_degrees(res).cos() / Self::radians_in_degrees(res).sin()),
@@ -140,7 +140,7 @@ pub struct Exponentiation;
 impl AppendArgs for Exponentiation {}
 
 impl Function for Exponentiation {
-    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
+    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcError> {
         let args_add_default = Self::check_len_args_or_stand_default_value(
             args, 2, vec![0., 2.]
         )?;
@@ -166,7 +166,7 @@ impl SquareRoot {
 }
 
 impl Function for SquareRoot {
-    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcErrors> {
+    fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<f64, CalcError> {
         let args_add_default = Self::check_len_args_or_stand_default_value(
             args, 2, vec![0., 2.]
         )?;
@@ -174,7 +174,7 @@ impl Function for SquareRoot {
         let res = Self::nth_root(arg[0], arg[1]);
 
         if res.is_nan() {
-            return Err(CalcErrors::ImpossibleExtractRootCorrectly);
+            return Err(CalcError::ImpossibleToExtractRootCorrectly);
         }
         Ok(res)
     }

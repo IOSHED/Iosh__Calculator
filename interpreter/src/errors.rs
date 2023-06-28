@@ -1,10 +1,11 @@
+use serde::{Serialize, Deserialize};
 use thiserror::Error;
 
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Serialize, Deserialize, Clone)]
 pub enum CalcError {
-    #[error("Input too big: {0}")]
-    InputTooBig(u64),
+    #[error("Input too big")]
+    InputTooBig,
 
     #[error("Syntax error")]
     SyntaxError,
@@ -21,8 +22,8 @@ pub enum CalcError {
     #[error("Unknown error")]
     UnknownError,
 
-    #[error("Incorrect number of arguments: expected {expected}, found {found}")]
-    IncorrectNumberOfArguments { expected: usize, found: usize },
+    #[error("Incorrect number of arguments: expected {0}, found {1}")]
+    IncorrectNumberOfArguments(usize, usize),
 
     #[error("Cannot open file with text: {0}")]
     CannotOpenFileWithText(String),

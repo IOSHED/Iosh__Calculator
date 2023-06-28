@@ -1,25 +1,25 @@
 use serde::{Serialize, Deserialize};
 
-use crate::{errors::CalcErrors, traits::{GetResult, RemoveElementIfMaxValue}};
+use crate::{errors::CalcError, traits::{GetResult, RemoveElementIfMaxValue}};
 
 
 #[derive(Deserialize, Serialize, Clone)]
 pub struct History {
     pub input: String,
-    pub result: Result<f64, CalcErrors>,
+    pub result: Result<f64, CalcError>,
 }
 
 impl History {
-    pub fn new(input: &str, result: Result<f64, CalcErrors>) -> Self {
+    pub fn new(input: &str, result: Result<f64, CalcError>) -> Self {
         History { input: input.to_string(), result }
     }
 }
 
-impl GetResult<Option<Result<f64, CalcErrors>>> for Vec<History> {
-    fn get_result(&self, input: &str) -> Option<Result<f64, CalcErrors>> {
+impl GetResult<Option<Result<f64, CalcError>>> for Vec<History> {
+    fn get_result(&self, input: &str) -> Option<Result<f64, CalcError>> {
         self.iter()
             .find(|history| history.input == input)
-            .map(|history| history.result)
+            .map(|history| history.result.clone())
     }
 }
 
