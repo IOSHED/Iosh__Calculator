@@ -1,10 +1,9 @@
 // Подключаем крейты для красивого и правильного кода.
 #![warn(clippy::all, clippy::pedantic)]
 
-#[macro_use]
 extern crate lazy_static;
 
-use calculator::{get_ast, get_interpreter, get_result};
+use crate::calculator::{get_ast, get_interpreter, get_result};
 use in_out::{get_input, MessageIO};
 use lalrpop_util::lalrpop_mod;
 use printer::print_start;
