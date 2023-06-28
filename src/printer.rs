@@ -1,3 +1,6 @@
+//! Файл для вывода на экран информации для пользователя.
+//! Не в коем случае не использовать на прямую, только через файл in_out.rs
+
 use std::fmt::Debug;
 
 use crossterm::{
@@ -11,43 +14,39 @@ use interpreter::interpreter::Interpreter;
 use crate::in_out::read_file_help;
 
 /// Получение длины самого большого элемента в `History` - Vec<(String, Result<f64, CalcError>)>.
-/// Cчитается даже длина для второй части - Result, перевведёной в тим String.
+/// Cчитается даже длина для второй части - Result, преобразованный в тип String.
 /// Не считается длина элемента, если он является ошибкой, то есть Err(_)
 ///
-/// * `history` - сама история, по кторой будет происводится поиск.
+/// * `history` - сама история, по которой будет идти поиск.
 /// * `min_len` - минимальная значение для длины, которое должно вернуться.
 ///
 /// # Example
 ///
 /// ```
+/// 
 /// let history = vec![
 ///     ("2 + 2".to_string(), Ok(4.0)),
 ///     ("2*2".to_string(), Ok(4.0)),
 /// ];
 ///
-/// assert_eq(get_len_of_longest_valid_element_in_history(&history, 5), 5);
-/// assert_eq(get_len_of_longest_valid_element_in_history(&history, 1), 3);
+/// assert_eq!(get_len_of_longest_valid_element_in_history(&history, 5), 5);
+/// assert_eq!(get_len_of_longest_valid_element_in_history(&history, 1), 3);
+/// 
 /// ```
 
 fn get_len_of_longest_valid_element_in_history(
     history: &Vec<(String, Result<f64, CalcError>)>,
     min_len: usize,
 ) -> usize {
-    let mut len_big_element = min_len;
-    for (req_str, res) in history {
-        let len_str = req_str.len();
-        if len_str > len_big_element {
-            len_big_element = len_str
-        }
-
-        if let Ok(res) = res {
-            let len_res = format!("{res}").len();
-            if len_res > len_big_element {
-                len_big_element = len_res
-            }
-        }
-    }
-    len_big_element
+    let max_len = history.iter()
+        .filter_map(|(req_str, res)| match res {
+            Ok(_) => Some(req_str.len()),
+            Err(_) => None,
+        })
+        .max()
+        .unwrap_or(0);
+    
+    max_len.max(min_len)
 }
 
 fn check_len_history(interpreter: &mut Interpreter, mut to: usize) -> usize {
