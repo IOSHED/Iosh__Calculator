@@ -4,19 +4,14 @@ use std::{
 };
 
 use interpreter::{errors::CalcError, interpreter::Interpreter};
-use regex::{Captures, Regex};
 use lazy_static::lazy_static;
+use regex::{Captures, Regex};
 
 use crate::{
     config::Config,
-    printer::{print_error, print_help, print_request_history},
+    messege::MessageIO,
+    printer::{print_error, print_help, print_start, Printer, Table},
 };
-
-pub enum MessageIO<T> {
-    Break,
-    Continue,
-    Ok(T),
-}
 
 lazy_static! {
     static ref RE_END_PROGRAM: String = Config::get().lock().unwrap().command.end.clone();
@@ -60,7 +55,7 @@ pub fn handler_arg_history(interpreter: &mut Interpreter, capt: Captures) -> Mes
         .get(1)
         .and_then(|arg| arg.as_str().parse::<usize>().ok())
         .unwrap_or_else(|| interpreter.request_history.len());
-    print_request_history(interpreter, output_line_history);
+    Table::print(interpreter, output_line_history);
     MessageIO::Continue
 }
 
@@ -98,6 +93,8 @@ pub fn read_file_help() -> Result<String, CalcError> {
 }
 
 pub fn get_input(interpreter: &mut Interpreter) -> MessageIO<String> {
+    print_start();
+
     let string = match get_input_user() {
         Ok(s) => s,
         Err(_) => return MessageIO::Break,

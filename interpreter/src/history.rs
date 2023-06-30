@@ -1,6 +1,7 @@
 use serde::{Serialize, Deserialize};
 
-use crate::{errors::CalcError, traits::{GetResult, RemoveElementIfMaxValue}};
+use crate::{errors::CalcError, traits::{GetResult, RemoveElementIfMaxValue}, interpreter::Interpreter};
+
 
 
 #[derive(Deserialize, Serialize, Clone)]
@@ -10,8 +11,37 @@ pub struct History {
 }
 
 impl History {
+    //
+
+
     pub fn new(input: &str, result: Result<f64, CalcError>) -> Self {
         History { input: input.to_string(), result }
+    }
+
+    /// Находит минимум между историей `Interpreter` и `to`.
+    /// Используется, для того чтобы пользователь не попытался вывеести больше записей истории,
+    /// Чем есть на самом деле.
+    ///
+    /// * `interpreter` - интерпритатор.
+    /// * `to` - минимальное возвращаеое значение.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// 
+    /// let mut interpreter = Interpreter::new(Config::default());
+    /// interpreter.request_history = vec![
+    ///     Hisrory::new("2 - 3", Some(-1.0)),
+    ///     History::new("2 4", Some(8.0)),
+    /// ];
+    ///
+    /// assert_eq!(check_len_history(&interpreter, 1), 1);
+    /// assert_eq!(check_len_history(&interpreter, 5), 2);
+    /// 
+    /// ```
+
+    pub fn get_len_history(interpreter: &Interpreter, to: usize) -> usize {
+        interpreter.request_history.len().min(to)
     }
 }
 

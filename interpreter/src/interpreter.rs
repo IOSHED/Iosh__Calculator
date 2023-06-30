@@ -36,8 +36,8 @@ impl Interpreter {
         );
 
         Interpreter {
-            request_history: Vec::new(),
-            variables: Vec::new(),
+            request_history: Vec::with_capacity(config.max_size_history),
+            variables: Vec::with_capacity(config.max_size_history),
             constants,
             config
         }
