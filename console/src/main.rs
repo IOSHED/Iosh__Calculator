@@ -3,18 +3,13 @@
 
 extern crate lazy_static;
 
-use crate::calculator::{get_ast, get_interpreter, get_result};
+use utils::{get_ast, get_interpreter, get_result};
 use in_out::get_input;
-use lalrpop_util::lalrpop_mod;
-use messege::MessageIO;
 
-mod calculator;
-mod config;
+use crate::{printer::print_error, in_out::MessageIO};
+
 mod in_out;
-mod messege;
 mod printer;
-
-lalrpop_mod!(pub parser);
 
 fn main() -> () {
     let mut interpreter = get_interpreter();
@@ -26,12 +21,12 @@ fn main() -> () {
             MessageIO::Ok(input) => input,
         };
 
-        let ast = match get_ast(&input) {
+        let ast = match get_ast(&input, print_error) {
             Some(ast) => ast,
             None => continue,
         };
 
-        let result = match get_result(&mut interpreter, ast, &input) {
+        let result = match get_result(&mut interpreter, ast, &input, print_error) {
             Some(result) => result,
             None => continue,
         };

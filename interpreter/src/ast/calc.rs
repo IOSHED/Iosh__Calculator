@@ -1,5 +1,5 @@
-use super::{expr::Expr};
-use std::{fmt::{Debug, Error, Formatter}};
+use super::expr::Expr;
+use std::fmt::{Debug, Error, Formatter};
 
 
 pub enum Calc<'input> {

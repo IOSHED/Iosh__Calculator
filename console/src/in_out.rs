@@ -6,12 +6,15 @@ use std::{
 use interpreter::{errors::CalcError, interpreter::Interpreter};
 use lazy_static::lazy_static;
 use regex::{Captures, Regex};
+use utils::config::Config;
 
-use crate::{
-    config::Config,
-    messege::MessageIO,
-    printer::{print_error, print_help, print_start, Printer, Table},
-};
+use crate::printer::{print_error, print_help, print_start, Printer, Table};
+
+pub enum MessageIO<T> {
+    Break,
+    Continue,
+    Ok(T),
+}
 
 lazy_static! {
     static ref RE_END_PROGRAM: String = Config::get().lock().unwrap().command.end.clone();
@@ -72,12 +75,6 @@ fn get_input_user() -> io::Result<String> {
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
     Ok(input)
-}
-
-pub fn load_interpreter() -> io::Result<Interpreter> {
-    let contents = fs::read_to_string("interpreter.json")?;
-    let interpreter: Interpreter = serde_json::from_str(&contents)?;
-    Ok(interpreter)
 }
 
 pub fn read_file_help() -> Result<String, CalcError> {

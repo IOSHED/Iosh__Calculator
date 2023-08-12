@@ -1,9 +1,6 @@
-#[macro_use]
-extern crate lalrpop_util;
 
 use interpreter::{config::Config, interpreter::Interpreter};
-
-lalrpop_mod!(pub parser);
+use utils::parser;
 
 macro_rules! testy {
     // expected - полученный ввод данных от пользвателя.

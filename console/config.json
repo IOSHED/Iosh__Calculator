@@ -7,7 +7,9 @@
         "history": "/history",
         "empty_input": ""
     },
+    
     "output_line_history": 10,
     "max_size_history": 50,
+
     "max_number_variable": 50
 }

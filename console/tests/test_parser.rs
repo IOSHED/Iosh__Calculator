@@ -1,7 +1,5 @@
-#[macro_use]
-extern crate lalrpop_util;
 
-lalrpop_mod!(pub parser);
+use utils::parser;
 
 macro_rules! testy {
     // expected - полученное в результате парсинга значение.
