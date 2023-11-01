@@ -17,6 +17,15 @@ pub struct Config {
     pub max_number_variable: usize,
 }
 
+impl From<Config> for interpreter::config::Config {
+    fn from(value: Config) -> Self {
+        interpreter::config::Config::new(
+            value.max_size_history,
+            value.max_number_variable,
+        )
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct Command {
     pub end: String,
@@ -46,3 +55,4 @@ impl Config {
         )
     }
 }
+

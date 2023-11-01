@@ -11,7 +11,7 @@ use interpreter::{ast::calc::Calc, errors::CalcError, interpreter::Interpreter};
 lalrpop_mod!(pub parser, "/lexer/parser.rs");
 
 
-pub fn get_ast<'input>(input: &'input str, funct_caused_error: fn(CalcError) -> ()) -> Option<Calc<'input>> {
+pub fn get_ast(input: &str, funct_caused_error: fn(CalcError) -> ()) -> Option<Calc> {
     let mut errors = Vec::new();
 
     match parser::CalcParser::new().parse(&mut errors, input) {

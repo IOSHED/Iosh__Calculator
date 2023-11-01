@@ -2,8 +2,8 @@
 use utils::parser;
 
 macro_rules! testy {
-    // expected - полученное в результате парсинга значение.
-    // received - ожидаемое значение.
+    /// * expected - полученное в результате парсинга значение.
+    /// * received - ожидаемое значение.
     ($expected: expr, $received: expr) => {
         let mut errors = Vec::new();
         assert_eq!(
@@ -19,8 +19,8 @@ macro_rules! testy {
 }
 
 macro_rules! testy_is_ok {
-    // name - имя структуры lalrpop, с которой будут парсится данные.
-    // expected - полученное в результате парсинга значение.
+    /// * name - имя структуры lalrpop, с которой будут парсится данные.
+    /// * expected - полученное в результате парсинга значение.
 
     //  проверяем упала ли программа при выполнениии парсинга.
     ($name: ident, $expected: expr) => {
@@ -30,9 +30,9 @@ macro_rules! testy_is_ok {
 }
 
 macro_rules! testy_struct {
-    // name - имя структуры lalrpop, с которой будут парсится данные.
-    // expected - полученное в результате парсинга значение.
-    // received - ожидаемое значение.
+    /// * name - имя структуры lalrpop, с которой будут парсится данные.
+    /// * expected - полученное в результате парсинга значение.
+    /// * received - ожидаемое значение.
     ($name: ident, $expected: expr, $received: expr) => {
         let mut errors = Vec::new();
         assert_eq!(

@@ -42,6 +42,7 @@ fn get_len_of_longest_valid_element_in_history(
     max_len.max(min_len)
 }
 
+/// struct `Table`
 /// * `width` - ширина таблицы.
 /// * `left_name` - имя левой колонки таблицы.
 /// * `right_name` - имя правой колонки таблицы.
