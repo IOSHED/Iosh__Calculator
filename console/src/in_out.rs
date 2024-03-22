@@ -17,14 +17,14 @@ pub enum MessageIO<T> {
 }
 
 lazy_static! {
-    static ref RE_END_PROGRAM: String = Config::get().lock().unwrap().command.end.clone();
-    static ref RE_END_STR: String = Config::get().lock().unwrap().command.empty_input.clone();
+    static ref RE_END_PROGRAM: String = Config::get().lock().unwrap().commands.end.clone();
+    static ref RE_END_STR: String = Config::get().lock().unwrap().commands.empty_input.clone();
     static ref RE_GET_HISTORY: Regex = Regex::new(&format!(
         r"^{}(?:\s+(all|\d+))?$",
-        Config::get().lock().unwrap().command.history.clone()
+        Config::get().lock().unwrap().commands.history.clone()
     ))
     .unwrap();
-    static ref RE_HELP: String = Config::get().lock().unwrap().command.help.clone();
+    static ref RE_HELP: String = Config::get().lock().unwrap().commands.help.clone();
     static ref OUTPUT_LINE_HISTORY: usize = Config::get().lock().unwrap().output_line_history;
 }
 

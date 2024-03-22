@@ -11,7 +11,7 @@ lazy_static! {
 #[derive(Serialize, Deserialize)]
 pub struct Config {
     pub path_file_help: String,
-    pub command: Command,
+    pub commands: Commands,
     pub output_line_history: usize,
     pub max_size_history: usize,
     pub max_number_variable: usize,
@@ -27,7 +27,7 @@ impl From<Config> for interpreter::config::Config {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Command {
+pub struct Commands {
     pub end: String,
     pub help: String,
     pub history: String,

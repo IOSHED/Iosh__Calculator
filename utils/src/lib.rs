@@ -46,7 +46,7 @@ pub fn get_interpreter() -> Interpreter {
 }
 
 pub fn get_result(
-    interpreter: &mut Interpreter, 
+    interpreter: &mut Interpreter,
     ast: Calc, 
     input: &str, 
     funct_caused_error: fn(CalcError) -> ()

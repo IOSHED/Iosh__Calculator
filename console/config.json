@@ -1,7 +1,7 @@
 
 {
     "path_file_help": "README.md",
-    "command": {
+    "commands": {
         "end": "/end",
         "help": "/help",
         "history": "/history",
