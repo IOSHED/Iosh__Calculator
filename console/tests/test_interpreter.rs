@@ -2,9 +2,9 @@
 use interpreter::{config::Config, interpreter::Interpreter};
 use utils::parser;
 
+/// * expected - полученный ввод данных от пользвателя.
+/// * received - ожидаемое значение.
 macro_rules! testy {
-    // expected - полученный ввод данных от пользвателя.
-    // received - ожидаемое значение.
     ($expected: expr, $received: expr) => {
         let mut interpreter = Interpreter::new(Config::new(50, 50));
 
