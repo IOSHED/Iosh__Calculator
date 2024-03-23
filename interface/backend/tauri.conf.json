@@ -1,7 +1,15 @@
 {
   "build": {
-    "devPath": "../frontend",
-    "distDir": "../frontend",
+    "beforeBuildCommand": {
+      "script": "npm run build",
+      "cwd": "../frontend"
+    },
+    "beforeDevCommand": {
+      "script": "npm run dev",
+      "cwd": "../frontend"
+    },
+    "devPath": "http://localhost:5173",
+    "distDir": "../build",
     "withGlobalTauri": true
   },
   "package": {
