@@ -11,9 +11,7 @@ pub struct FactoryFunc;
 
 impl FactoryFunc {
     pub fn match_(
-        name: &FuncName,
-        args: &[Box<Expr>],
-        calc: &mut Interpreter,
+        name: &FuncName, args: &[Box<Expr>], calc: &mut Interpreter,
     ) -> Result<f64, CalcError> {
         match name {
             FuncName::Sin => Sin::ahead(args, calc),
@@ -38,9 +36,7 @@ trait Function {
     }
 
     fn check_len_args_or_stand_default_value<'a>(
-        args: &'a [Box<Expr<'a>>],
-        expects: usize,
-        default_value: Vec<f64>,
+        args: &'a [Box<Expr<'a>>], expects: usize, default_value: Vec<f64>,
     ) -> Result<Vec<Box<Expr<'a>>>, CalcError> {
         let mut new_args = args.to_vec();
 

@@ -45,10 +45,7 @@ pub fn get_interpreter() -> Interpreter {
 }
 
 pub fn get_result(
-    interpreter: &mut Interpreter,
-    ast: Calc,
-    input: &str,
-    funct_caused_error: fn(CalcError) -> (),
+    interpreter: &mut Interpreter, ast: Calc, input: &str, funct_caused_error: fn(CalcError) -> (),
 ) -> Option<f64> {
     match interpreter.eval(ast, &input) {
         Ok(n) => {

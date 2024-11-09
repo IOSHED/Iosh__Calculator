@@ -30,6 +30,6 @@ fn main() -> () {
             None => continue,
         };
 
-        println!("{}", result);
+        println!("{result}");
     }
 }

@@ -3,7 +3,7 @@ pub trait GetResult<T> {
 }
 
 pub trait RemoveElementIfMaxValue {
-    fn remove_element_if_max_value(&mut self, max_value: usize) -> ();
+    fn remove_element_if_max_value(&mut self, max_value: usize);
 }
 
 pub trait GetElementByName<'a, T> {

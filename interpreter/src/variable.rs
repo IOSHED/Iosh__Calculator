@@ -23,7 +23,7 @@ impl GetResult<Option<f64>> for Vec<Variable> {
 }
 
 impl RemoveElementIfMaxValue for Vec<Variable> {
-    fn remove_element_if_max_value(&mut self, max_value: usize) -> () {
+    fn remove_element_if_max_value(&mut self, max_value: usize) {
         if self.len() > max_value {
             self.remove(0);
         }

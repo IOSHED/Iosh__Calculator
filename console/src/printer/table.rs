@@ -15,7 +15,7 @@ use interpreter::{errors::CalcError, history::History, interpreter::Interpreter}
 /// # Example
 ///
 /// ```
-///
+/// 
 /// let history = vec![
 ///     ("2 + 2".to_string(), Ok(4.0)),
 ///     ("2*2".to_string(), Ok(4.0)),
@@ -23,12 +23,10 @@ use interpreter::{errors::CalcError, history::History, interpreter::Interpreter}
 ///
 /// assert_eq!(get_len_of_longest_valid_element_in_history(&history, 5), 5);
 /// assert_eq!(get_len_of_longest_valid_element_in_history(&history, 1), 3);
-///
 /// ```
 
 fn get_len_of_longest_valid_element_in_history(
-    history: &Vec<(String, Result<f64, CalcError>)>,
-    min_len: usize,
+    history: &Vec<(String, Result<f64, CalcError>)>, min_len: usize,
 ) -> usize {
     let max_len = history
         .iter()
@@ -64,9 +62,7 @@ impl<'a> Table<'a> {
     /// * `history` - содержимое таблицы, котрое печатается в два столбика.
 
     pub fn new(
-        left_name: &str,
-        right_name: &str,
-        history: &'a Vec<(String, Result<f64, CalcError>)>,
+        left_name: &str, right_name: &str, history: &'a Vec<(String, Result<f64, CalcError>)>,
     ) -> Self {
         let width = get_len_of_longest_valid_element_in_history(
             history,

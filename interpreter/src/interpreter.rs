@@ -24,9 +24,9 @@ pub struct Interpreter {
 
 impl Interpreter {
     pub fn new(config: Config) -> Self {
-        let speed_light: f64 = 299792458.0; // СКОРОСТЬ СВЕТА
+        let speed_light: f64 = 299_792_458.0; // СКОРОСТЬ СВЕТА
         let acceleration_free_fall: f64 = 9.80665; // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
-        let gravitational_constant: f64 = 0.0000000000066720; // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ
+        let gravitational_constant: f64 = 0.000_000_000_006_672_0; // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ
         let pi: f64 = PI;
         let e: f64 = E;
 
@@ -99,7 +99,7 @@ impl Interpreter {
         None
     }
 
-    fn insert_history(&mut self, input: &str, result: f64) -> () {
+    fn insert_history(&mut self, input: &str, result: f64) {
         self.request_history
             .remove_element_if_max_value(self.config.max_size_history);
         self.request_history.push(History::new(input, Ok(result)));

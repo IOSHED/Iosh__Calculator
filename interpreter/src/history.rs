@@ -32,7 +32,7 @@ impl History {
     /// # Example
     ///
     /// ```
-    ///
+    /// 
     /// let mut interpreter = Interpreter::new(Config::default());
     /// interpreter.request_history = vec![
     ///     Hisrory::new("2 - 3", Some(-1.0)),
@@ -41,7 +41,6 @@ impl History {
     ///
     /// assert_eq!(check_len_history(&interpreter, 1), 1);
     /// assert_eq!(check_len_history(&interpreter, 5), 2);
-    ///
     /// ```
 
     pub fn get_len_history(interpreter: &Interpreter, to: usize) -> usize {
@@ -58,7 +57,7 @@ impl GetResult<Option<Result<f64, CalcError>>> for Vec<History> {
 }
 
 impl RemoveElementIfMaxValue for Vec<History> {
-    fn remove_element_if_max_value(&mut self, max_value: usize) -> () {
+    fn remove_element_if_max_value(&mut self, max_value: usize) {
         if self.len() > max_value {
             self.remove(0);
         }
