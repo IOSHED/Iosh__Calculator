@@ -12,7 +12,6 @@ pub use calc::{print_error, print_start};
 pub use help::print_help;
 pub use table::Table;
 
-
 pub trait Printer {
     fn print(interpreter: &mut Interpreter, to: usize) -> ();
 }

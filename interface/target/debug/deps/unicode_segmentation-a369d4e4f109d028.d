@@ -1,9 +1,0 @@
-D:\projects\rust\Iosh__Calculator\interface\target\debug\deps\libunicode_segmentation-a369d4e4f109d028.rmeta: C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src/lib.rs C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\grapheme.rs C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\sentence.rs C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\word.rs C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\tables.rs
-
-D:\projects\rust\Iosh__Calculator\interface\target\debug\deps\unicode_segmentation-a369d4e4f109d028.d: C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src/lib.rs C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\grapheme.rs C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\sentence.rs C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\word.rs C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\tables.rs
-
-C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src/lib.rs:
-C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\grapheme.rs:
-C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\sentence.rs:
-C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\word.rs:
-C:\Users\Ивенин(а)\.cargo\registry\src\index.crates.io-6f17d22bba15001f\unicode-segmentation-1.12.0\src\tables.rs:

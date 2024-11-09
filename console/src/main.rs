@@ -1,12 +1,11 @@
-// Подключаем крейты для красивого и правильного кода.
 #![warn(clippy::all, clippy::pedantic)]
 
 extern crate lazy_static;
 
-use utils::{get_ast, get_interpreter, get_result};
+use core::{get_ast, get_interpreter, get_result};
 use in_out::get_input;
 
-use crate::{printer::print_error, in_out::MessageIO};
+use crate::{in_out::MessageIO, printer::print_error};
 
 mod in_out;
 mod printer;

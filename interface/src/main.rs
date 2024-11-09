@@ -1,40 +1,65 @@
-use iced::widget::{button, column, text, Column};
-use iced::Center;
+#![warn(clippy::all, clippy::pedantic)]
 
-pub fn main() -> iced::Result {
-    iced::run("A cool counter", Counter::update, Counter::view)
+use iced::keyboard::key::Named;
+use iced::keyboard::{on_key_press, Key, Modifiers};
+use iced::widget::{column, text_editor};
+use iced::{Center, Element, Subscription, Theme};
+
+fn main() -> iced::Result {
+    iced::application(
+        "FRO Calcualtor",
+        ApplicationCalculator::update, 
+        ApplicationCalculator::view,
+    )
+    .subscription(ApplicationCalculator::user_press_enter)
+    .theme(ApplicationCalculator::theme)
+    .run()
 }
 
 #[derive(Default)]
-struct Counter {
-    value: i64,
+struct ApplicationCalculator {
+    user_input: String,
 }
 
-#[derive(Debug, Clone, Copy)]
-enum Message {
-    Increment,
-    Decrement,
+#[derive(Debug, Clone)]
+enum AppEvent {
+    UserPushSymbol(String),
+    UserPressEnter,
 }
 
-impl Counter {
-    fn update(&mut self, message: Message) {
-        match message {
-            Message::Increment => {
-                self.value += 1;
-            }
-            Message::Decrement => {
-                self.value -= 1;
-            }
+impl ApplicationCalculator {
+    fn update(&mut self, app_event: AppEvent) {
+        match app_event {
+            AppEvent::UserPushSymbol(user_input) => {
+                self.user_input = user_input.clone();
+                println!("{}", user_input.clone());
+            },
+            AppEvent::UserPressEnter => {
+                self.user_input = "".to_string();
+            },
         }
     }
 
-    fn view(&self) -> Column<Message> {
+    fn view(&self) -> Element<AppEvent> {
         column![
-            button("Increment").on_press(Message::Increment),
-            text(self.value).size(50),
-            button("Decrement").on_press(Message::Decrement)
+            text_editor(&self.user_input)
+                .on_action(AppEvent::UserPushSymbol),
         ]
         .padding(20)
         .align_x(Center)
+        .into()
+    }
+    
+    fn theme(&self) -> Theme {
+        Theme::TokyoNight
+    }
+
+    fn user_press_enter(&self) -> Subscription<AppEvent> {
+        on_key_press(|key: Key, _modifiers: Modifiers| {
+           match key {
+                Key::Named(Named::Enter) => Some(AppEvent::UserPressEnter),
+                _ => None
+            } 
+        })
     }
 }

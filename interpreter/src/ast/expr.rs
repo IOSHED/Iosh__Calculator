@@ -1,7 +1,10 @@
-use std::fmt::{Debug, Error, Formatter};
+use super::{
+    func::FactoryFunc,
+    func_name::FuncName,
+    opcode::{Opcode, Operation},
+};
 use crate::{errors::CalcError, interpreter::Interpreter, traits::GetResult};
-use super::{opcode::{Opcode, Operation}, func_name::FuncName, func::FactoryFunc};
-
+use std::fmt::{Debug, Error, Formatter};
 
 #[derive(Clone)]
 pub enum Expr<'input> {
@@ -16,7 +19,6 @@ pub trait Evaluatable {
     fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcError>;
 }
 
-
 impl<'input> Debug for Expr<'input> {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
         use self::Expr::*;
@@ -30,7 +32,7 @@ impl<'input> Debug for Expr<'input> {
                     .collect::<Vec<String>>()
                     .join(" ");
                 write!(fmt, "{func:?}({str})")
-            },
+            }
             Error(msg) => write!(fmt, "Ошибка: {msg:?}"),
             Variable(name) => write!(fmt, "{name:?}"),
         }
@@ -39,12 +41,13 @@ impl<'input> Debug for Expr<'input> {
 
 impl<'input> Expr<'input> {
     pub fn get_variable(interpreter: &mut Interpreter, name: &&str) -> Result<f64, CalcError> {
-        interpreter.variables.get_result(name)
+        interpreter
+            .variables
+            .get_result(name)
             .or_else(|| interpreter.constants.get_result(name))
             .ok_or(CalcError::CallingNonexistentVariable(name.to_string()))
     }
 }
-
 
 impl<'input> Evaluatable for Expr<'input> {
     fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcError> {

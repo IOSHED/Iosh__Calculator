@@ -2,7 +2,6 @@ use crate::errors::CalcError;
 
 use super::opcode::Opcode;
 
-
 pub struct FactoryOp;
 
 impl FactoryOp {
@@ -17,7 +16,6 @@ impl FactoryOp {
         }
     }
 }
-
 
 pub trait Operation {
     fn ahead(left: f64, right: f64) -> Result<f64, CalcError>;
@@ -44,7 +42,7 @@ pub struct IntDiv;
 impl Operation for IntDiv {
     fn ahead(left: f64, right: f64) -> Result<f64, CalcError> {
         if right == 0.0 {
-            return Err(CalcError::DivisionByZero)
+            return Err(CalcError::DivisionByZero);
         }
         Ok((left / right).trunc())
     }
@@ -76,11 +74,3 @@ impl Operation for Div {
         Ok(left / right)
     }
 }
-
-
-
-
-
-
-
-

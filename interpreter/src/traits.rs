@@ -1,5 +1,3 @@
-
-
 pub trait GetResult<T> {
     fn get_result(&self, input: &str) -> T;
 }
