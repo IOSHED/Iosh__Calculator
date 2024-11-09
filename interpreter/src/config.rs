@@ -7,7 +7,7 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(max_size_history: usize, max_number_variable: usize) -> Self {
+    #[must_use] pub fn new(max_size_history: usize, max_number_variable: usize) -> Self {
         Config {
             max_size_history,
             max_number_variable,

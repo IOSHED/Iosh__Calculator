@@ -1,4 +1,3 @@
-#![warn(clippy::all, clippy::pedantic)]
 
 extern crate lazy_static;
 
@@ -10,7 +9,7 @@ use crate::{in_out::MessageIO, printer::print_error};
 mod in_out;
 mod printer;
 
-fn main() -> () {
+fn main() {
     let mut interpreter = get_interpreter();
 
     loop {

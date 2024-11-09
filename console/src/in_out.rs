@@ -45,7 +45,7 @@ pub fn handle_command(interpreter: &mut Interpreter, string: &str) -> MessageIO<
         s if s == RE_END_STR.as_str() => MessageIO::Continue,
         _ => {
             if let Some(capt) = RE_GET_HISTORY.captures(string) {
-                handler_arg_history(interpreter, capt)
+                handler_arg_history(interpreter, &capt)
             } else {
                 MessageIO::Ok(string.to_string())
             }
@@ -53,16 +53,16 @@ pub fn handle_command(interpreter: &mut Interpreter, string: &str) -> MessageIO<
     }
 }
 
-pub fn handler_arg_history(interpreter: &mut Interpreter, capt: Captures) -> MessageIO<String> {
+pub fn handler_arg_history(interpreter: &mut Interpreter, capt: &Captures) -> MessageIO<String> {
     let output_line_history = capt
         .get(1)
         .and_then(|arg| arg.as_str().parse::<usize>().ok())
-        .unwrap_or_else(|| interpreter.request_history.len());
+        .unwrap_or(interpreter.request_history.len());
     Table::print(interpreter, output_line_history);
     MessageIO::Continue
 }
 
-fn save_interpreter(interpreter: &mut Interpreter) -> () {
+fn save_interpreter(interpreter: &mut Interpreter) {
     let serialized = serde_json::to_string(interpreter).unwrap();
 
     let file = File::create("interpreter.json").unwrap();

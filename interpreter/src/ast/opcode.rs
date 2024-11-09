@@ -20,13 +20,13 @@ pub enum Opcode {
 
 pub trait Operation {
     fn evaluate(
-        &self, left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter,
+        &self, left: Box<Expr>, right: Box<Expr>, interpreter: &mut Interpreter,
     ) -> Result<f64, CalcError>;
 }
 
 impl Debug for Opcode {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        use self::Opcode::*;
+        use self::Opcode::{Add, Div, IntDiv, Mod, Mul, Sub};
         match *self {
             Mul => write!(fmt, "*"),
             Div => write!(fmt, "/"),
@@ -40,7 +40,7 @@ impl Debug for Opcode {
 
 impl Operation for Opcode {
     fn evaluate(
-        &self, left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter,
+        &self, left: Box<Expr>, right: Box<Expr>, interpreter: &mut Interpreter,
     ) -> Result<f64, CalcError> {
         let left = left.evaluate(interpreter)?;
         let right = right.evaluate(interpreter)?;

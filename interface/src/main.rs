@@ -1,4 +1,3 @@
-#![warn(clippy::all, clippy::pedantic)]
 
 use iced::keyboard::key::Named;
 use iced::keyboard::{on_key_press, Key, Modifiers};
@@ -31,11 +30,11 @@ impl ApplicationCalculator {
     fn update(&mut self, app_event: AppEvent) {
         match app_event {
             AppEvent::UserPushSymbol(user_input) => {
-                self.user_input = user_input.clone();
+                self.user_input.clone_from(&user_input);
                 println!("{}", user_input.clone());
             }
             AppEvent::UserPressEnter => {
-                self.user_input = "".to_string();
+                self.user_input = String::new();
             }
         }
     }

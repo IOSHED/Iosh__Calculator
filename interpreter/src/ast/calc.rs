@@ -6,9 +6,9 @@ pub enum Calc<'input> {
     Expr(Box<Expr<'input>>),
 }
 
-impl<'input> Debug for Calc<'input> {
+impl Debug for Calc<'_> {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        use self::Calc::*;
+        use self::Calc::{Expr, InitVariable};
         match self {
             InitVariable(name, ref expr) => write!(fmt, "{name} = {expr:?}"),
             Expr(expr) => write!(fmt, "{expr:?}"),

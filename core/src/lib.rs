@@ -1,4 +1,3 @@
-#![warn(clippy::all, clippy::pedantic)]
 
 pub mod config;
 
@@ -31,7 +30,7 @@ pub fn load_interpreter() -> io::Result<Interpreter> {
     Ok(interpreter)
 }
 
-pub fn get_interpreter() -> Interpreter {
+#[must_use] pub fn get_interpreter() -> Interpreter {
     let instans = Config::get();
     let config = instans.lock().unwrap();
 
@@ -47,11 +46,9 @@ pub fn get_interpreter() -> Interpreter {
 pub fn get_result(
     interpreter: &mut Interpreter, ast: Calc, input: &str, funct_caused_error: fn(CalcError) -> (),
 ) -> Option<f64> {
-    match interpreter.eval(ast, &input) {
+    match interpreter.eval(ast, input) {
         Ok(n) => {
-            if n == None {
-                return None;
-            }
+            n?;
             n
         }
         Err(err) => {

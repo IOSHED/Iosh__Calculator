@@ -23,7 +23,7 @@ pub struct Interpreter {
 }
 
 impl Interpreter {
-    pub fn new(config: Config) -> Self {
+    #[must_use] pub fn new(config: Config) -> Self {
         let speed_light: f64 = 299_792_458.0; // СКОРОСТЬ СВЕТА
         let acceleration_free_fall: f64 = 9.80665; // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
         let gravitational_constant: f64 = 0.000_000_000_006_672_0; // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ
@@ -48,7 +48,7 @@ impl Interpreter {
 
     pub fn eval(&mut self, calc: Calc, input: &str) -> Result<Option<f64>, CalcError> {
         match calc {
-            Calc::InitVariable(name, expr) => match self.init_variable(name, &expr) {
+            Calc::InitVariable(name, expr) => match self.init_variable(name, *expr) {
                 Some(err) => Err(err),
                 None => Ok(None),
             },
@@ -59,7 +59,7 @@ impl Interpreter {
         }
     }
 
-    pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<f64, CalcError>)> {
+    #[must_use] pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<f64, CalcError>)> {
         self.request_history
             .iter()
             .rev()
@@ -74,7 +74,7 @@ impl Interpreter {
         Ok(result)
     }
 
-    fn init_variable(&mut self, name: &str, expr: &Box<Expr>) -> Option<CalcError> {
+    fn init_variable(&mut self, name: &str, expr: Expr) -> Option<CalcError> {
         if self.constants.get_result(name).is_some() {
             return Some(CalcError::CannotCreateVariablesWithNameConstant);
         }

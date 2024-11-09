@@ -15,7 +15,7 @@ pub struct History {
 impl History {
     //
 
-    pub fn new(input: &str, result: Result<f64, CalcError>) -> Self {
+    #[must_use] pub fn new(input: &str, result: Result<f64, CalcError>) -> Self {
         History {
             input: input.to_string(),
             result,
@@ -42,8 +42,7 @@ impl History {
     /// assert_eq!(check_len_history(&interpreter, 1), 1);
     /// assert_eq!(check_len_history(&interpreter, 5), 2);
     /// ```
-
-    pub fn get_len_history(interpreter: &Interpreter, to: usize) -> usize {
+    #[must_use] pub fn get_len_history(interpreter: &Interpreter, to: usize) -> usize {
         interpreter.request_history.len().min(to)
     }
 }

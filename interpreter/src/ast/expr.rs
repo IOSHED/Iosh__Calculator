@@ -19,16 +19,16 @@ pub trait Evaluatable {
     fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcError>;
 }
 
-impl<'input> Debug for Expr<'input> {
+impl Debug for Expr<'_> {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        use self::Expr::*;
+        use self::Expr::{Error, Func, Number, Op, Variable};
         match self {
-            Number(n) => write!(fmt, "{:?}", n),
+            Number(n) => write!(fmt, "{n:?}"),
             Op(l, op, r) => write!(fmt, "({l:?} {op:?} {r:?})"),
             Func(func, args) => {
                 let str = args
                     .iter()
-                    .map(|val| format!("{:?}", val))
+                    .map(|val| format!("{val:?}"))
                     .collect::<Vec<String>>()
                     .join(" ");
                 write!(fmt, "{func:?}({str})")
@@ -39,23 +39,23 @@ impl<'input> Debug for Expr<'input> {
     }
 }
 
-impl<'input> Expr<'input> {
+impl Expr<'_> {
     pub fn get_variable(interpreter: &mut Interpreter, name: &&str) -> Result<f64, CalcError> {
         interpreter
             .variables
             .get_result(name)
             .or_else(|| interpreter.constants.get_result(name))
-            .ok_or(CalcError::CallingNonexistentVariable(name.to_string()))
+            .ok_or(CalcError::CallingNonexistentVariable((*name).to_string()))
     }
 }
 
-impl<'input> Evaluatable for Expr<'input> {
+impl Evaluatable for Expr<'_> {
     fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcError> {
         match self {
             Expr::Number(n) => Ok(*n),
             Expr::Func(name, expr) => FactoryFunc::match_(name, expr, interpreter),
             Expr::Variable(name) => Self::get_variable(interpreter, name),
-            Expr::Op(left, op, right) => op.evaluate(left, right, interpreter),
+            Expr::Op(left, op, right) => op.evaluate(left.clone(), right.clone(), interpreter),
             Expr::Error(err) => Err(err.clone()),
         }
     }

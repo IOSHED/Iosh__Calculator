@@ -41,11 +41,14 @@ trait Function {
         let mut new_args = args.to_vec();
 
         match Self::check_len_args(args, expects) {
-            Ok(_) => return Ok(args.to_vec()),
+            Ok(()) => return Ok(args.to_vec()),
             Err(_) => {
-                for j in new_args.len()..expects {
-                    new_args.push(Box::new(Expr::Number(default_value[j])));
-                }
+                new_args.extend(
+                    default_value.iter()
+                        .skip(new_args.len())
+                        .take(expects - new_args.len())
+                        .map(|&value| Box::new(Expr::Number(value)))
+                );
             }
         }
 

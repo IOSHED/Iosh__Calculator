@@ -32,23 +32,23 @@ pub struct Commands {
 }
 
 impl Config {
-    pub fn load() -> Self {
-        let file = File::open("/configurate/user.json")
-            .expect("Failed to open file config.json. Check its availability.");
+    #[must_use] pub fn load() -> Self {
+        let file = File::open("./configurate/user.json")
+            .expect("Failed to open file `/configurate/user.json`. Check its availability.");
         let reader = BufReader::new(file);
         let config: Config =
             serde_json::from_reader(reader).expect("Failed to parse config. Check for all fields.");
         config
     }
 
-    pub fn get() -> Arc<Mutex<Config>> {
+    #[must_use] pub fn get() -> Arc<Mutex<Config>> {
         INSTANCE.clone()
     }
 
-    pub fn get_config_for_interpreter(&self) -> interpreter::config::Config {
+    #[must_use] pub fn get_config_for_interpreter(&self) -> interpreter::config::Config {
         interpreter::config::Config::new(
-            self.max_size_history.clone(),
-            self.max_number_variable.clone(),
+            self.max_size_history,
+            self.max_number_variable,
         )
     }
 }
