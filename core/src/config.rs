@@ -33,7 +33,7 @@ pub struct Commands {
 
 impl Config {
     pub fn load() -> Self {
-        let file = File::open("config.json")
+        let file = File::open("/configurate/user.json")
             .expect("Failed to open file config.json. Check its availability.");
         let reader = BufReader::new(file);
         let config: Config =
