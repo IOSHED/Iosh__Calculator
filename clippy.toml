@@ -1,0 +1,5 @@
+exclude = ["target"]
+
+warn = ["clippy::complexity", "clippy::style", "clippy::perf"]
+
+allow = ["clippy::cognitive_complexity", "clippy::needless_pass_by_value"]
