@@ -1,5 +1,5 @@
 [package]
-name = "interface"
+name = "fro-calculator"
 description = "The application is calculator with UI/UX"
 authors = ["Ivenin Valentin <iveninvala7@gmail.com>"]
 repository = "https://github.com/IOSHED/Iosh__Calculator/"
@@ -7,9 +7,6 @@ readme = "../README.md"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-
-[[bin]]
-name = "fro-calculator"
 
 [dependencies]
 iced = "0.13.1"
