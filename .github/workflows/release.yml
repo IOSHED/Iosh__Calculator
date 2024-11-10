@@ -4,7 +4,7 @@ name: Rust Release Workflow
 on:
   push:
     tags:
-      - 'v*'  # Запускается на создание нового тега, начинающегося с 'v'
+      - 'v*'
 
 jobs:
   build:
@@ -15,13 +15,13 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Set up Rust
-        uses: actions/setup-rust@v1
+      - uses: actions-rs/toolchain@v1
         with:
-          rust-version: stable
+          profile: minimal
+          toolchain: stable
+          override: true
 
       - name: Run fmt
         run: |
