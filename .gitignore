@@ -1,5 +1,4 @@
-.vscode
 
-console/target
-interpreter/target
-utils/target
+# Rust
+/target
+Cargo.lock

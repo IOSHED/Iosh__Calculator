@@ -1,13 +1,21 @@
 [package]
 name = "console"
-version = "0.1.0"
+description = "The application is console calculator"
+authors = ["Ivenin Valentin <iveninvala7@gmail.com>"]
+repository = "https://github.com/IOSHED/Iosh__Calculator/"
+readme = "../configurate/README.md"
+version = "1.0.0"
 edition = "2021"
+license = "MIT"
 
 build = "build.rs"
 
+[[bin]]
+name = "fro-console"
+
 [dependencies]
 interpreter = { path = "../interpreter" }
-utils = { path = "../utils" }
+core = { path = "../core" }
 
 libc = "0.2.80"
 
@@ -19,6 +27,7 @@ serde_json = "1.0"
 lazy_static = "1.4"
 
 crossterm = "0.26.1"
+
 
 [build-dependencies]
 lalrpop = "0.20.0"

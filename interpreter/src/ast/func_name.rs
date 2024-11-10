@@ -1,10 +1,9 @@
 use std::fmt::{Debug, Error, Formatter};
 
-
 #[derive(Copy, Clone)]
 pub enum FuncName {
-    Exponentiation,  // Возмедение в степень.
-    SquareRoot,  // Квадратный корень.
+    Exponentiation, // Возмедение в степень.
+    SquareRoot,     // Квадратный корень.
 
     Sin,
     Cos,
@@ -12,7 +11,6 @@ pub enum FuncName {
     Tg,
     Ctg,
 }
-
 
 impl Debug for FuncName {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {

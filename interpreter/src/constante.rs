@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::traits::GetResult;
 
-
 #[derive(Deserialize, Serialize)]
 pub struct Constant {
     name: String,
@@ -13,7 +12,7 @@ impl Constant {
     pub fn new(name: &str, value: f64) -> Self {
         Constant {
             name: name.to_string(),
-            value 
+            value,
         }
     }
 }

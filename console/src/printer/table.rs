@@ -5,7 +5,7 @@ use crossterm::{
 };
 use interpreter::{errors::CalcError, history::History, interpreter::Interpreter};
 
-/// Получение длины самого большого элемента в `History` - Vec<(String, Result<f64, CalcError>)>.
+/// Получение длины самого большого элемента в `History` - Vec<(String, Result<f64, `CalcError`>)>.
 /// Cчитается даже длина для второй части - Result, преобразованный в тип String.
 /// Не считается длина элемента, если он является ошибкой, то есть Err(_).
 ///
@@ -15,7 +15,7 @@ use interpreter::{errors::CalcError, history::History, interpreter::Interpreter}
 /// # Example
 ///
 /// ```
-///
+/// 
 /// let history = vec![
 ///     ("2 + 2".to_string(), Ok(4.0)),
 ///     ("2*2".to_string(), Ok(4.0)),
@@ -23,12 +23,9 @@ use interpreter::{errors::CalcError, history::History, interpreter::Interpreter}
 ///
 /// assert_eq!(get_len_of_longest_valid_element_in_history(&history, 5), 5);
 /// assert_eq!(get_len_of_longest_valid_element_in_history(&history, 1), 3);
-///
 /// ```
-
 fn get_len_of_longest_valid_element_in_history(
-    history: &Vec<(String, Result<f64, CalcError>)>,
-    min_len: usize,
+    history: &[(String, Result<f64, CalcError>)], min_len: usize,
 ) -> usize {
     let max_len = history
         .iter()
@@ -47,7 +44,6 @@ fn get_len_of_longest_valid_element_in_history(
 /// * `left_name` - имя левой колонки таблицы.
 /// * `right_name` - имя правой колонки таблицы.
 /// * `content` - содержимое таблицы.
-
 #[derive(Clone)]
 pub struct Table<'a> {
     width: usize,
@@ -62,11 +58,8 @@ impl<'a> Table<'a> {
     /// * `left_name` - имя левой колонки таблицы.
     /// * `right_name` - имя правой колонки таблицы.
     /// * `history` - содержимое таблицы, котрое печатается в два столбика.
-
     pub fn new(
-        left_name: &str,
-        right_name: &str,
-        history: &'a Vec<(String, Result<f64, CalcError>)>,
+        left_name: &str, right_name: &str, history: &'a Vec<(String, Result<f64, CalcError>)>,
     ) -> Self {
         let width = get_len_of_longest_valid_element_in_history(
             history,
@@ -120,23 +113,21 @@ impl<'a> Table<'a> {
     }
 
     /// Печатет шапку таблицы.
-
     pub fn print_table_header(self) -> Self {
         self.clone().print_table_title();
         self.clone().print_table_border();
         self
     }
 
-    // Печатает строчку таблицы.
-
-    pub fn print_table_line(self, res: &f64, req_str: &str) -> Self {
+    /// Печатает строчку таблицы.
+    pub fn print_table_line(self, res: f64, req_str: &str) -> Self {
         let width = self.width;
         execute!(
             std::io::stdout(),
             SetForegroundColor(color::BLUE),
             Print("| "),
             SetForegroundColor(color::CYAN),
-            Print(format!("{:^width$}", res,)),
+            Print(format!("{res:^width$}",)),
             SetForegroundColor(color::BLUE),
             Print(" | "),
             SetForegroundColor(color::CYAN),
@@ -149,20 +140,19 @@ impl<'a> Table<'a> {
         self
     }
 
-    // Печатает строчки таблицы.
-
-    pub fn print_table_lines(self, to: usize) -> () {
+    /// Печатает строчки таблицы.
+    pub fn print_table_lines(self, to: usize) {
         for (_, (req_str, res)) in self.content.iter().enumerate().take(to) {
             match res {
-                Ok(res) => self.clone().print_table_line(res, req_str),
+                Ok(res) => self.clone().print_table_line(*res, req_str),
                 Err(_) => continue,
             };
         }
     }
 }
 
-impl<'a> Printer for Table<'a> {
-    fn print(interpreter: &mut Interpreter, to: usize) -> () {
+impl Printer for Table<'_> {
+    fn print(interpreter: &mut Interpreter, to: usize) {
         let (left_name, right_name) = ("Result", "String");
 
         let to = History::get_len_history(interpreter, to);

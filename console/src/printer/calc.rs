@@ -7,8 +7,7 @@ use interpreter::errors::CalcError;
 use crate::printer::color;
 
 /// Печатает ошибку в виде "Error: передоваемая ошибка" красным цветом.
-
-pub fn print_error(err: CalcError) -> () {
+pub fn print_error(err: CalcError) {
     execute!(
         std::io::stdout(),
         SetForegroundColor(color::RED_ERROR),
@@ -18,17 +17,16 @@ pub fn print_error(err: CalcError) -> () {
         Print(format!("{err}\n")),
         ResetColor,
     )
-    .unwrap()
+    .unwrap();
 }
 
 /// Печатает `>>>`, зелёным цветом.
-
-pub fn print_start() -> () {
+pub fn print_start() {
     execute!(
         std::io::stdout(),
         SetForegroundColor(color::GREEN),
         Print(">>> "),
         ResetColor,
     )
-    .unwrap()
+    .unwrap();
 }

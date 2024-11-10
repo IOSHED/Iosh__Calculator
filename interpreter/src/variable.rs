@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::{GetResult, RemoveElementIfMaxValue, GetElementByName};
-
+use crate::traits::{GetElementByName, GetResult, RemoveElementIfMaxValue};
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct Variable {
@@ -24,7 +23,7 @@ impl GetResult<Option<f64>> for Vec<Variable> {
 }
 
 impl RemoveElementIfMaxValue for Vec<Variable> {
-    fn remove_element_if_max_value(&mut self, max_value: usize) -> () {
+    fn remove_element_if_max_value(&mut self, max_value: usize) {
         if self.len() > max_value {
             self.remove(0);
         }
@@ -33,7 +32,6 @@ impl RemoveElementIfMaxValue for Vec<Variable> {
 
 impl<'a> GetElementByName<'a, Option<&'a mut Variable>> for Vec<Variable> {
     fn get_element_by_name(&'a mut self, name: &str) -> Option<&'a mut Variable> {
-        self.iter_mut()
-            .find(|variable| variable.name == name)
+        self.iter_mut().find(|variable| variable.name == name)
     }
 }

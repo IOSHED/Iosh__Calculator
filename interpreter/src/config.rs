@@ -1,5 +1,4 @@
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Config {
@@ -8,13 +7,19 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(max_size_history: usize, max_number_variable: usize) -> Self {
-        Config { max_size_history, max_number_variable }
+    #[must_use] pub fn new(max_size_history: usize, max_number_variable: usize) -> Self {
+        Config {
+            max_size_history,
+            max_number_variable,
+        }
     }
 }
 
 impl Default for Config {
     fn default() -> Self {
-        Self { max_size_history: 50, max_number_variable: 50 }
+        Self {
+            max_size_history: 50,
+            max_number_variable: 50,
+        }
     }
 }

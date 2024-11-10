@@ -1,18 +1,15 @@
 
-# ТО ЧТО ОБЯЗАН СДЕЛАТЬ:
+# WHAT NEEDS TO BE DONE
 
 ```diff
-+ 0 - Добавить возведение в степень, а также добавить множественную передачу аргументов к функциям
-+ 1 - Вывод history более красивым.
-+ 2 - Пользваель может сам выбирать сколько истории ему увидеть.
-+ 3 - ПОльзователь может вывести всю историю командой "all"
-+ 4 - Сделать '>>>' зелёным, а историю сининьким с наклоном
-+ 5 - Добавить команду '/help'
-- 6 - Добавить подсказки в виде нужных функций
-- 7 - При введении '(' печатаьт и вторую
-- 8 - Добавить ввод пользоватлеьских функций
-- 9 - Добавить решение квадратных уровнений
-+ 10 - Добавить файл config.json
-- 11 - Решить проблему float
-- 12 - Написать UI
++ 0 - Add exponentiation, as well as add multiple argument passing to functions
++ 1 - Make history output more aesthetically pleasing.
++ 2 - User can choose how much history they want to see.
++ 3 - User can output the entire history with the command "all"
++ 4 - Make '>>>' green, and history italicized in blue
++ 5 - Add the command '/help'
+- 6 - Add hints in the form of necessary functions (autocompleter)
+- 7 - When entering '(', also print the second one
+- 8 - Add user function input
+- 9 - Add
 ```

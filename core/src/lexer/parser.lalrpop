@@ -1,0 +1,105 @@
+use std::str::FromStr;
+use lalrpop_util::{ParseError, ErrorRecovery};
+use interpreter::{
+    errors::CalcError,
+    ast::{expr::Expr, opcode::Opcode, func_name::FuncName, calc::Calc},
+};
+
+
+grammar<'err>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, CalcError>>);
+
+
+extern {
+    type Error = CalcError;
+}
+
+Comma<T>: Vec<T> = {
+    <mut v:(<T> ";")*> <e:T?> => match e {
+        None => v,
+        Some(e) => {
+            v.push(e);
+            v
+        }
+    }
+};
+
+
+pub Calc: Calc<'input> = {
+    Expr => Calc::Expr(<>),
+    InitVariable,
+};
+
+
+pub Expr: Box<Expr<'input>> = { 
+    Expr ExprOp Factor => Box::new(Expr::Op(<>)),
+    Factor,
+};
+
+
+ExprOp: Opcode = { 
+    "+" => Opcode::Add,
+    "-" => Opcode::Sub,
+};
+
+
+Factor: Box<Expr<'input>> = {
+    Factor FactorOp Term => Box::new(Expr::Op(<>)),
+    Factor FactorOp Func => Box::new(Expr::Op(<>)),
+    <f: Factor> <t: Term> => Box::new(Expr::Op(f, Opcode::Mul, t)),
+    Term,
+    Func,
+};
+
+
+FactorOp: Opcode = {
+    "*" => Opcode::Mul,
+    "/" => Opcode::Div,
+    ":" => Opcode::Div,
+    "mod" => Opcode::Mod,
+    "div" => Opcode::IntDiv,
+};
+
+
+Func: Box<Expr<'input>> = {
+    <n: FuncName> "(" <e: FuncArgs> ")" => Box::new(Expr::Func(n, e)),
+};
+
+
+FuncArgs: Vec<Box<Expr<'input>>> = Comma<Expr>;
+
+
+FuncName: FuncName = {
+    "cos" => FuncName::Cos,
+    "sin" => FuncName::Sin,
+    "tg" => FuncName::Tg,
+    "ctg" => FuncName::Ctg,
+    "sqrt" => FuncName::SquareRoot,
+    "rt" => FuncName::SquareRoot,
+    "exp" => FuncName::Exponentiation,
+};
+
+pub Term: Box<Expr<'input>> = {
+    Num => Box::new(Expr::Number(<>)),
+    Variable => Box::new(Expr::Variable(<>)),
+    "(" <Expr> ")",
+
+    ! => { errors.push(<>); Box::new(Expr::Error(CalcError::SyntaxError)) },
+};
+
+
+pub InitVariable: Calc<'input> = {
+    <n: Variable> "=" <e: Expr> => Calc::InitVariable(n, e)
+};
+
+
+pub Variable: &'input str = {
+    r"[A-Za-z]+" => <>
+};
+
+
+pub Num: f64 = {
+    r"[+-]?(\d+[\.\,]?\d*)|([\.\,]\d+)" =>? f64::from_str(&<>.replace(",", ".").to_string())
+        .map_err(|_| ParseError::User {
+            error: CalcError::InputTooBig
+    }),
+};

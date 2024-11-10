@@ -1,9 +1,11 @@
 use std::fmt::{Debug, Error, Formatter};
 
-use crate::{interpreter::Interpreter, errors::CalcError};
+use crate::{errors::CalcError, interpreter::Interpreter};
 
-use super::{expr::{Expr, Evaluatable}, operation::FactoryOp};
-
+use super::{
+    expr::{Evaluatable, Expr},
+    operation::FactoryOp,
+};
 
 #[derive(Copy, Clone)]
 pub enum Opcode {
@@ -17,12 +19,14 @@ pub enum Opcode {
 }
 
 pub trait Operation {
-    fn evaluate(&self,left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter) -> Result<f64, CalcError>;
+    fn evaluate(
+        &self, left: Box<Expr>, right: Box<Expr>, interpreter: &mut Interpreter,
+    ) -> Result<f64, CalcError>;
 }
 
 impl Debug for Opcode {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        use self::Opcode::*;
+        use self::Opcode::{Add, Div, IntDiv, Mod, Mul, Sub};
         match *self {
             Mul => write!(fmt, "*"),
             Div => write!(fmt, "/"),
@@ -35,7 +39,9 @@ impl Debug for Opcode {
 }
 
 impl Operation for Opcode {
-    fn evaluate(&self, left: &Box<Expr>, right: &Box<Expr>, interpreter: &mut Interpreter) -> Result<f64, CalcError> {
+    fn evaluate(
+        &self, left: Box<Expr>, right: Box<Expr>, interpreter: &mut Interpreter,
+    ) -> Result<f64, CalcError> {
         let left = left.evaluate(interpreter)?;
         let right = right.evaluate(interpreter)?;
 

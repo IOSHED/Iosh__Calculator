@@ -1,8 +1,10 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
-use crate::{errors::CalcError, traits::{GetResult, RemoveElementIfMaxValue}, interpreter::Interpreter};
-
-
+use crate::{
+    errors::CalcError,
+    interpreter::Interpreter,
+    traits::{GetResult, RemoveElementIfMaxValue},
+};
 
 #[derive(Deserialize, Serialize, Clone)]
 pub struct History {
@@ -13,9 +15,11 @@ pub struct History {
 impl History {
     //
 
-
-    pub fn new(input: &str, result: Result<f64, CalcError>) -> Self {
-        History { input: input.to_string(), result }
+    #[must_use] pub fn new(input: &str, result: Result<f64, CalcError>) -> Self {
+        History {
+            input: input.to_string(),
+            result,
+        }
     }
 
     /// Находит минимум между историей `Interpreter` и `to`.
@@ -37,10 +41,8 @@ impl History {
     ///
     /// assert_eq!(check_len_history(&interpreter, 1), 1);
     /// assert_eq!(check_len_history(&interpreter, 5), 2);
-    /// 
     /// ```
-
-    pub fn get_len_history(interpreter: &Interpreter, to: usize) -> usize {
+    #[must_use] pub fn get_len_history(interpreter: &Interpreter, to: usize) -> usize {
         interpreter.request_history.len().min(to)
     }
 }
@@ -54,7 +56,7 @@ impl GetResult<Option<Result<f64, CalcError>>> for Vec<History> {
 }
 
 impl RemoveElementIfMaxValue for Vec<History> {
-    fn remove_element_if_max_value(&mut self, max_value: usize) -> () {
+    fn remove_element_if_max_value(&mut self, max_value: usize) {
         if self.len() > max_value {
             self.remove(0);
         }
