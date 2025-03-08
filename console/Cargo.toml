@@ -10,8 +10,8 @@ license = "MIT"
 
 build = "build.rs"
 
-[[bin]]
-name = "fro-console"
+#[[bin]]
+#name = "fro-console"
 
 [dependencies]
 interpreter = { path = "../interpreter" }
