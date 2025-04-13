@@ -5,6 +5,7 @@ members = [
     "console",
     "interface",
     "core",
+    "launcher",
 ]
 
 
