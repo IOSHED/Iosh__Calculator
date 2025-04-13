@@ -1,3 +1,4 @@
+use rust_decimal::Decimal;
 use crate::errors::CalcError;
 
 use super::opcode::Opcode;
@@ -5,7 +6,7 @@ use super::opcode::Opcode;
 pub struct FactoryOp;
 
 impl FactoryOp {
-    pub fn match_(op: Opcode, left: f64, right: f64) -> Result<f64, CalcError> {
+    pub fn match_(op: Opcode, left: Decimal, right: Decimal) -> Result<Decimal, CalcError> {
         match op {
             Opcode::Mul => Mul::ahead(left, right),
             Opcode::Div => Div::ahead(left, right),
@@ -18,13 +19,13 @@ impl FactoryOp {
 }
 
 pub trait Operation {
-    fn ahead(left: f64, right: f64) -> Result<f64, CalcError>;
+    fn ahead(left: Decimal, right: Decimal) -> Result<Decimal, CalcError>;
 }
 
 pub struct Add;
 
 impl Operation for Add {
-    fn ahead(left: f64, right: f64) -> Result<f64, CalcError> {
+    fn ahead(left: Decimal, right: Decimal) -> Result<Decimal, CalcError> {
         Ok(left + right)
     }
 }
@@ -32,7 +33,7 @@ impl Operation for Add {
 pub struct Sub;
 
 impl Operation for Sub {
-    fn ahead(left: f64, right: f64) -> Result<f64, CalcError> {
+    fn ahead(left: Decimal, right: Decimal) -> Result<Decimal, CalcError> {
         Ok(left - right)
     }
 }
@@ -40,8 +41,8 @@ impl Operation for Sub {
 pub struct IntDiv;
 
 impl Operation for IntDiv {
-    fn ahead(left: f64, right: f64) -> Result<f64, CalcError> {
-        if right == 0.0 {
+    fn ahead(left: Decimal, right: Decimal) -> Result<Decimal, CalcError> {
+        if right == 0.0.try_into().unwrap() {
             return Err(CalcError::DivisionByZero);
         }
         Ok((left / right).trunc())
@@ -51,7 +52,7 @@ impl Operation for IntDiv {
 pub struct Mod;
 
 impl Operation for Mod {
-    fn ahead(left: f64, right: f64) -> Result<f64, CalcError> {
+    fn ahead(left: Decimal, right: Decimal) -> Result<Decimal, CalcError> {
         Ok(left % right)
     }
 }
@@ -59,7 +60,7 @@ impl Operation for Mod {
 pub struct Mul;
 
 impl Operation for Mul {
-    fn ahead(left: f64, right: f64) -> Result<f64, CalcError> {
+    fn ahead(left: Decimal, right: Decimal) -> Result<Decimal, CalcError> {
         Ok(left * right)
     }
 }
@@ -67,8 +68,8 @@ impl Operation for Mul {
 pub struct Div;
 
 impl Operation for Div {
-    fn ahead(left: f64, right: f64) -> Result<f64, CalcError> {
-        if right == 0.0 {
+    fn ahead(left: Decimal, right: Decimal) -> Result<Decimal, CalcError> {
+        if right == 0.0.try_into().unwrap(){
             return Err(CalcError::DivisionByZero);
         }
         Ok(left / right)

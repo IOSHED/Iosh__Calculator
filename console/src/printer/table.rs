@@ -3,9 +3,10 @@ use crossterm::{
     execute,
     style::{Print, ResetColor, SetForegroundColor},
 };
+use rust_decimal::Decimal;
 use interpreter::{errors::CalcError, history::History, interpreter::Interpreter};
 
-/// Получение длины самого большого элемента в `History` - Vec<(String, Result<f64, `CalcError`>)>.
+/// Получение длины самого большого элемента в `History` - Vec<(String, Result<Decimal, `CalcError`>)>.
 /// Cчитается даже длина для второй части - Result, преобразованный в тип String.
 /// Не считается длина элемента, если он является ошибкой, то есть Err(_).
 ///
@@ -25,7 +26,7 @@ use interpreter::{errors::CalcError, history::History, interpreter::Interpreter}
 /// assert_eq!(get_len_of_longest_valid_element_in_history(&history, 1), 3);
 /// ```
 fn get_len_of_longest_valid_element_in_history(
-    history: &[(String, Result<f64, CalcError>)], min_len: usize,
+    history: &[(String, Result<Decimal, CalcError>)], min_len: usize,
 ) -> usize {
     let max_len = history
         .iter()
@@ -49,7 +50,7 @@ pub struct Table<'a> {
     width: usize,
     left_name: String,
     right_name: String,
-    content: &'a Vec<(String, Result<f64, CalcError>)>,
+    content: &'a Vec<(String, Result<Decimal, CalcError>)>,
 }
 
 impl<'a> Table<'a> {
@@ -59,7 +60,7 @@ impl<'a> Table<'a> {
     /// * `right_name` - имя правой колонки таблицы.
     /// * `history` - содержимое таблицы, котрое печатается в два столбика.
     pub fn new(
-        left_name: &str, right_name: &str, history: &'a Vec<(String, Result<f64, CalcError>)>,
+        left_name: &str, right_name: &str, history: &'a Vec<(String, Result<Decimal, CalcError>)>,
     ) -> Self {
         let width = get_len_of_longest_valid_element_in_history(
             history,
@@ -120,7 +121,7 @@ impl<'a> Table<'a> {
     }
 
     /// Печатает строчку таблицы.
-    pub fn print_table_line(self, res: f64, req_str: &str) -> Self {
+    pub fn print_table_line(self, res: Decimal, req_str: &str) -> Self {
         let width = self.width;
         execute!(
             std::io::stdout(),

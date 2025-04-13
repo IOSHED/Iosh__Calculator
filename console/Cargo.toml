@@ -28,6 +28,8 @@ lazy_static = "1.4"
 
 crossterm = "0.26.1"
 
+rust_decimal = "1.37.1"
+
 
 [build-dependencies]
 lalrpop = "0.20.0"

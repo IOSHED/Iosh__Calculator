@@ -29,4 +29,7 @@ pub enum CalcError {
 
     #[error("Impossible to extract root correctly")]
     ImpossibleToExtractRootCorrectly,
+
+    #[error("Math error")]
+    MathError,
 }

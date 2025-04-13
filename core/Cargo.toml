@@ -18,6 +18,8 @@ serde_json = "1.0"
 
 lazy_static = "1.4"
 
+rust_decimal = "1.37.1"
+
 
 [build-dependencies]
 lalrpop = "0.20.0"

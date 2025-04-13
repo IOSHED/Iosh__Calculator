@@ -10,9 +10,16 @@ mod in_out;
 mod printer;
 
 fn main() {
-    let mut interpreter = get_interpreter();
+    let interpreter = get_interpreter(print_error);
+
+    if interpreter.is_none() {
+        loop {}
+    }
+
+    let mut interpreter = interpreter.unwrap();
 
     loop {
+
         let input = match get_input(&mut interpreter) {
             MessageIO::Break => break,
             MessageIO::Continue => continue,
@@ -30,5 +37,6 @@ fn main() {
         };
 
         println!("{result}");
+
     }
 }

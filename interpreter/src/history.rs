@@ -1,3 +1,4 @@
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -9,13 +10,13 @@ use crate::{
 #[derive(Deserialize, Serialize, Clone)]
 pub struct History {
     pub input: String,
-    pub result: Result<f64, CalcError>,
+    pub result: Result<Decimal, CalcError>,
 }
 
 impl History {
     //
 
-    #[must_use] pub fn new(input: &str, result: Result<f64, CalcError>) -> Self {
+    #[must_use] pub fn new(input: &str, result: Result<Decimal, CalcError>) -> Self {
         History {
             input: input.to_string(),
             result,
@@ -47,8 +48,8 @@ impl History {
     }
 }
 
-impl GetResult<Option<Result<f64, CalcError>>> for Vec<History> {
-    fn get_result(&self, input: &str) -> Option<Result<f64, CalcError>> {
+impl GetResult<Option<Result<Decimal, CalcError>>> for Vec<History> {
+    fn get_result(&self, input: &str) -> Option<Result<Decimal, CalcError>> {
         self.iter()
             .find(|history| history.input == input)
             .map(|history| history.result.clone())

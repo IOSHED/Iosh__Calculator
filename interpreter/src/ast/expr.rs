@@ -5,10 +5,11 @@ use super::{
 };
 use crate::{errors::CalcError, interpreter::Interpreter, traits::GetResult};
 use std::fmt::{Debug, Error, Formatter};
+use rust_decimal::Decimal;
 
 #[derive(Clone)]
 pub enum Expr<'input> {
-    Number(f64),
+    Number(Decimal),
     Variable(&'input str),
     Op(Box<Expr<'input>>, Opcode, Box<Expr<'input>>),
     Func(FuncName, Vec<Box<Expr<'input>>>),
@@ -16,7 +17,7 @@ pub enum Expr<'input> {
 }
 
 pub trait Evaluatable {
-    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcError>;
+    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<Decimal, CalcError>;
 }
 
 impl Debug for Expr<'_> {
@@ -40,7 +41,7 @@ impl Debug for Expr<'_> {
 }
 
 impl Expr<'_> {
-    pub fn get_variable(interpreter: &mut Interpreter, name: &&str) -> Result<f64, CalcError> {
+    pub fn get_variable(interpreter: &mut Interpreter, name: &&str) -> Result<Decimal, CalcError> {
         interpreter
             .variables
             .get_result(name)
@@ -50,7 +51,7 @@ impl Expr<'_> {
 }
 
 impl Evaluatable for Expr<'_> {
-    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<f64, CalcError> {
+    fn evaluate(&self, interpreter: &mut Interpreter) -> Result<Decimal, CalcError> {
         match self {
             Expr::Number(n) => Ok(*n),
             Expr::Func(name, expr) => FactoryFunc::match_(name, expr, interpreter),

@@ -1,5 +1,5 @@
 use std::fmt::{Debug, Error, Formatter};
-
+use rust_decimal::Decimal;
 use crate::{errors::CalcError, interpreter::Interpreter};
 
 use super::{
@@ -21,7 +21,7 @@ pub enum Opcode {
 pub trait Operation {
     fn evaluate(
         &self, left: Box<Expr>, right: Box<Expr>, interpreter: &mut Interpreter,
-    ) -> Result<f64, CalcError>;
+    ) -> Result<Decimal, CalcError>;
 }
 
 impl Debug for Opcode {
@@ -41,7 +41,7 @@ impl Debug for Opcode {
 impl Operation for Opcode {
     fn evaluate(
         &self, left: Box<Expr>, right: Box<Expr>, interpreter: &mut Interpreter,
-    ) -> Result<f64, CalcError> {
+    ) -> Result<Decimal, CalcError> {
         let left = left.evaluate(interpreter)?;
         let right = right.evaluate(interpreter)?;
 

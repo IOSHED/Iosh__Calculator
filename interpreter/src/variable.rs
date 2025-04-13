@@ -1,3 +1,4 @@
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::traits::{GetElementByName, GetResult, RemoveElementIfMaxValue};
@@ -5,17 +6,17 @@ use crate::traits::{GetElementByName, GetResult, RemoveElementIfMaxValue};
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct Variable {
     pub name: String,
-    pub value: f64,
+    pub value: Decimal,
 }
 
 impl Variable {
-    pub fn new(name: String, value: f64) -> Self {
+    pub fn new(name: String, value: Decimal) -> Self {
         Variable { name, value }
     }
 }
 
-impl GetResult<Option<f64>> for Vec<Variable> {
-    fn get_result(&self, input: &str) -> Option<f64> {
+impl GetResult<Option<Decimal>> for Vec<Variable> {
+    fn get_result(&self, input: &str) -> Option<Decimal> {
         self.iter()
             .find(|variable| variable.name == input)
             .map(|variable| variable.value)

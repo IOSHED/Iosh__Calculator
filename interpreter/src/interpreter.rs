@@ -1,5 +1,6 @@
-use serde::{Deserialize, Serialize};
 use std::f64::consts::{E, PI};
+use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
 
 use crate::traits::{GetElementByName, GetResult, RemoveElementIfMaxValue};
 use crate::{
@@ -23,12 +24,12 @@ pub struct Interpreter {
 }
 
 impl Interpreter {
-    #[must_use] pub fn new(config: Config) -> Self {
-        let speed_light: f64 = 299_792_458.0; // СКОРОСТЬ СВЕТА
-        let acceleration_free_fall: f64 = 9.80665; // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
-        let gravitational_constant: f64 = 0.000_000_000_006_672_0; // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ
-        let pi: f64 = PI;
-        let e: f64 = E;
+    #[must_use] pub fn new(config: Config) -> Result<Self, CalcError> {
+        let speed_light: Decimal = 299_792_458.0.try_into().map_err(|_| CalcError::MathError)?; // СКОРОСТЬ СВЕТА
+        let acceleration_free_fall: Decimal = 9.80665.try_into().map_err(|_| CalcError::MathError)?; // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
+        let gravitational_constant: Decimal = 0.000_000_000_006_672_0.try_into().map_err(|_| CalcError::MathError)?; // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ
+        let pi: Decimal = PI.try_into().unwrap();
+        let e: Decimal = E.try_into().unwrap();
 
         let constants = vec![
             Constant::new("PI", pi),
@@ -38,15 +39,15 @@ impl Interpreter {
             Constant::new("G", gravitational_constant),
         ];
 
-        Interpreter {
+        Ok(Interpreter {
             request_history: Vec::with_capacity(config.max_size_history),
             variables: Vec::with_capacity(config.max_size_history),
             constants,
             config,
-        }
+        })
     }
 
-    pub fn eval(&mut self, calc: Calc, input: &str) -> Result<Option<f64>, CalcError> {
+    pub fn eval(&mut self, calc: Calc, input: &str) -> Result<Option<Decimal>, CalcError> {
         match calc {
             Calc::InitVariable(name, expr) => match self.init_variable(name, *expr) {
                 Some(err) => Err(err),
@@ -59,7 +60,7 @@ impl Interpreter {
         }
     }
 
-    #[must_use] pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<f64, CalcError>)> {
+    #[must_use] pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<Decimal, CalcError>)> {
         self.request_history
             .iter()
             .rev()
@@ -68,7 +69,7 @@ impl Interpreter {
             .collect()
     }
 
-    fn eval_expr(&mut self, expr: &Expr, input: &str) -> Result<f64, CalcError> {
+    fn eval_expr(&mut self, expr: &Expr, input: &str) -> Result<Decimal, CalcError> {
         let result = expr.evaluate(self)?;
         self.insert_history(input, result);
         Ok(result)
@@ -85,7 +86,7 @@ impl Interpreter {
         }
     }
 
-    fn add_or_change_variable(&mut self, name: &str, result: f64) -> Option<CalcError> {
+    fn add_or_change_variable(&mut self, name: &str, result: Decimal) -> Option<CalcError> {
         if let Some(variable) = self.variables.get_element_by_name(name) {
             if variable.value == result {
                 return None;
@@ -99,7 +100,7 @@ impl Interpreter {
         None
     }
 
-    fn insert_history(&mut self, input: &str, result: f64) {
+    fn insert_history(&mut self, input: &str, result: Decimal) {
         self.request_history
             .remove_element_if_max_value(self.config.max_size_history);
         self.request_history.push(History::new(input, Ok(result)));

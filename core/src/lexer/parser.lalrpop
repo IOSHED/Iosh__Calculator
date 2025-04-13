@@ -1,4 +1,5 @@
 use std::str::FromStr;
+use rust_decimal::Decimal;
 use lalrpop_util::{ParseError, ErrorRecovery};
 use interpreter::{
     errors::CalcError,
@@ -97,8 +98,8 @@ pub Variable: &'input str = {
 };
 
 
-pub Num: f64 = {
-    r"[+-]?(\d+[\.\,]?\d*)|([\.\,]\d+)" =>? f64::from_str(&<>.replace(",", ".").to_string())
+pub Num: Decimal = {
+    r"[+-]?(\d+[\.\,]?\d*)|([\.\,]\d+)" =>? Decimal::from_str(&<>.replace(",", ".").to_string())
         .map_err(|_| ParseError::User {
             error: CalcError::InputTooBig
     }),

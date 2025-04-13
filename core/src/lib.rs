@@ -3,7 +3,7 @@ pub mod config;
 
 use lalrpop_util::lalrpop_mod;
 use std::{fs, io};
-
+use rust_decimal::Decimal;
 use config::Config;
 use interpreter::{ast::calc::Calc, errors::CalcError, interpreter::Interpreter};
 
@@ -30,22 +30,28 @@ pub fn load_interpreter() -> io::Result<Interpreter> {
     Ok(interpreter)
 }
 
-#[must_use] pub fn get_interpreter() -> Interpreter {
+#[must_use] pub fn get_interpreter(funct_caused_error: fn(CalcError) -> ()) -> Option<Interpreter> {
     let instans = Config::get();
     let config = instans.lock().unwrap();
 
     match load_interpreter() {
         Ok(mut i) => {
             i.config = config.get_config_for_interpreter();
-            i
+            Some(i)
         }
-        Err(_) => Interpreter::new(config.get_config_for_interpreter()),
+        Err(_) => match Interpreter::new(config.get_config_for_interpreter()) {
+            Ok(i) => Some(i),
+            Err(err) => {
+                funct_caused_error(err);
+                None
+            }
+        },
     }
 }
 
 pub fn get_result(
     interpreter: &mut Interpreter, ast: Calc, input: &str, funct_caused_error: fn(CalcError) -> (),
-) -> Option<f64> {
+) -> Option<Decimal> {
     match interpreter.eval(ast, input) {
         Ok(n) => {
             n?;
