@@ -32,7 +32,8 @@ pub struct Commands {
 }
 
 impl Config {
-    #[must_use] pub fn load() -> Self {
+    #[must_use]
+    pub fn load() -> Self {
         let file = File::open("./configurate/user.json")
             .expect("Failed to open file `/configurate/user.json`. Check its availability.");
         let reader = BufReader::new(file);
@@ -41,14 +42,13 @@ impl Config {
         config
     }
 
-    #[must_use] pub fn get() -> Arc<Mutex<Config>> {
+    #[must_use]
+    pub fn get() -> Arc<Mutex<Config>> {
         INSTANCE.clone()
     }
 
-    #[must_use] pub fn get_config_for_interpreter(&self) -> interpreter::config::Config {
-        interpreter::config::Config::new(
-            self.max_size_history,
-            self.max_number_variable,
-        )
+    #[must_use]
+    pub fn get_config_for_interpreter(&self) -> interpreter::config::Config {
+        interpreter::config::Config::new(self.max_size_history, self.max_number_variable)
     }
 }

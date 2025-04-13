@@ -1,4 +1,3 @@
-
 extern crate lazy_static;
 
 use core::{get_ast, get_interpreter, get_result};
@@ -19,7 +18,6 @@ fn main() {
     let mut interpreter = interpreter.unwrap();
 
     loop {
-
         let input = match get_input(&mut interpreter) {
             MessageIO::Break => break,
             MessageIO::Continue => continue,
@@ -37,6 +35,5 @@ fn main() {
         };
 
         println!("{result}");
-
     }
 }

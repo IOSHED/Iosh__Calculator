@@ -16,7 +16,8 @@ pub struct History {
 impl History {
     //
 
-    #[must_use] pub fn new(input: &str, result: Result<Decimal, CalcError>) -> Self {
+    #[must_use]
+    pub fn new(input: &str, result: Result<Decimal, CalcError>) -> Self {
         History {
             input: input.to_string(),
             result,
@@ -33,7 +34,7 @@ impl History {
     /// # Example
     ///
     /// ```
-    /// 
+    ///
     /// let mut interpreter = Interpreter::new(Config::default());
     /// interpreter.request_history = vec![
     ///     Hisrory::new("2 - 3", Some(-1.0)),
@@ -43,7 +44,8 @@ impl History {
     /// assert_eq!(check_len_history(&interpreter, 1), 1);
     /// assert_eq!(check_len_history(&interpreter, 5), 2);
     /// ```
-    #[must_use] pub fn get_len_history(interpreter: &Interpreter, to: usize) -> usize {
+    #[must_use]
+    pub fn get_len_history(interpreter: &Interpreter, to: usize) -> usize {
         interpreter.request_history.len().min(to)
     }
 }

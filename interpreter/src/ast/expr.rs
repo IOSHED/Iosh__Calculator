@@ -4,8 +4,8 @@ use super::{
     opcode::{Opcode, Operation},
 };
 use crate::{errors::CalcError, interpreter::Interpreter, traits::GetResult};
-use std::fmt::{Debug, Error, Formatter};
 use rust_decimal::Decimal;
+use std::fmt::{Debug, Error, Formatter};
 
 #[derive(Clone)]
 pub enum Expr<'input> {

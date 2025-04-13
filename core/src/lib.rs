@@ -1,11 +1,10 @@
-
 pub mod config;
 
-use lalrpop_util::lalrpop_mod;
-use std::{fs, io};
-use rust_decimal::Decimal;
 use config::Config;
 use interpreter::{ast::calc::Calc, errors::CalcError, interpreter::Interpreter};
+use lalrpop_util::lalrpop_mod;
+use rust_decimal::Decimal;
+use std::{fs, io};
 
 lalrpop_mod!(pub parser, "/lexer/parser.rs");
 
@@ -30,7 +29,8 @@ pub fn load_interpreter() -> io::Result<Interpreter> {
     Ok(interpreter)
 }
 
-#[must_use] pub fn get_interpreter(funct_caused_error: fn(CalcError) -> ()) -> Option<Interpreter> {
+#[must_use]
+pub fn get_interpreter(funct_caused_error: fn(CalcError) -> ()) -> Option<Interpreter> {
     let instans = Config::get();
     let config = instans.lock().unwrap();
 

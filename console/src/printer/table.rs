@@ -3,8 +3,8 @@ use crossterm::{
     execute,
     style::{Print, ResetColor, SetForegroundColor},
 };
-use rust_decimal::Decimal;
 use interpreter::{errors::CalcError, history::History, interpreter::Interpreter};
+use rust_decimal::Decimal;
 
 /// Получение длины самого большого элемента в `History` - Vec<(String, Result<Decimal, `CalcError`>)>.
 /// Cчитается даже длина для второй части - Result, преобразованный в тип String.
@@ -16,7 +16,7 @@ use interpreter::{errors::CalcError, history::History, interpreter::Interpreter}
 /// # Example
 ///
 /// ```
-/// 
+///
 /// let history = vec![
 ///     ("2 + 2".to_string(), Ok(4.0)),
 ///     ("2*2".to_string(), Ok(4.0)),

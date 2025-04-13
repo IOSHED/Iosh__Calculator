@@ -1,6 +1,6 @@
-use std::fmt::{Debug, Error, Formatter};
-use rust_decimal::Decimal;
 use crate::{errors::CalcError, interpreter::Interpreter};
+use rust_decimal::Decimal;
+use std::fmt::{Debug, Error, Formatter};
 
 use super::{
     expr::{Evaluatable, Expr},

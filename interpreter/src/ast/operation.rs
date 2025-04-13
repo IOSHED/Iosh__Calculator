@@ -1,5 +1,5 @@
-use rust_decimal::Decimal;
 use crate::errors::CalcError;
+use rust_decimal::Decimal;
 
 use super::opcode::Opcode;
 
@@ -69,7 +69,7 @@ pub struct Div;
 
 impl Operation for Div {
     fn ahead(left: Decimal, right: Decimal) -> Result<Decimal, CalcError> {
-        if right == 0.0.try_into().unwrap(){
+        if right == 0.0.try_into().unwrap() {
             return Err(CalcError::DivisionByZero);
         }
         Ok(left / right)

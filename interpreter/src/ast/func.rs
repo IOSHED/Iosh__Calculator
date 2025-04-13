@@ -5,9 +5,9 @@ use super::{
     func_name::FuncName,
 };
 
-use std::f64::consts::PI;
-use rust_decimal::Decimal;
 use rust_decimal::prelude::{FromPrimitive, ToPrimitive};
+use rust_decimal::Decimal;
+use std::f64::consts::PI;
 
 pub struct FactoryFunc;
 
@@ -46,10 +46,11 @@ trait Function {
             Ok(()) => return Ok(args.to_vec()),
             Err(_) => {
                 new_args.extend(
-                    default_value.iter()
+                    default_value
+                        .iter()
                         .skip(new_args.len())
                         .take(expects - new_args.len())
-                        .map(|&value| Box::new(Expr::Number(value)))
+                        .map(|&value| Box::new(Expr::Number(value))),
                 );
             }
         }
@@ -99,8 +100,7 @@ impl DecimalMath for Decimal {
     fn powf(&self, exponent: Decimal) -> Result<Decimal, CalcError> {
         let base = self.to_f64().ok_or(CalcError::MathError)?;
         let exp = exponent.to_f64().ok_or(CalcError::MathError)?;
-        Decimal::from_f64(base.powf(exp))
-            .ok_or(CalcError::MathError)
+        Decimal::from_f64(base.powf(exp)).ok_or(CalcError::MathError)
     }
 }
 
@@ -189,7 +189,8 @@ impl AppendArgs for Exponentiation {}
 
 impl Function for Exponentiation {
     fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<Decimal, CalcError> {
-        let args_add_default = Self::check_len_args_or_stand_default_value(args, 2, vec![0.into(), 2.into()])?;
+        let args_add_default =
+            Self::check_len_args_or_stand_default_value(args, 2, vec![0.into(), 2.into()])?;
         let arg = Self::append_args(&args_add_default, calc)?;
         Ok(arg[0].powf(arg[1])?)
     }
@@ -212,7 +213,8 @@ impl SquareRoot {
 
 impl Function for SquareRoot {
     fn ahead(args: &[Box<Expr>], calc: &mut Interpreter) -> Result<Decimal, CalcError> {
-        let args_add_default = Self::check_len_args_or_stand_default_value(args, 2, vec![0.into(), 2.into()])?;
+        let args_add_default =
+            Self::check_len_args_or_stand_default_value(args, 2, vec![0.into(), 2.into()])?;
         let arg = Self::append_args(&args_add_default, calc)?;
         let res = Self::nth_root(arg[0], arg[1])?;
 

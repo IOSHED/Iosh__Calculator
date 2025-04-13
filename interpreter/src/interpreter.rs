@@ -1,6 +1,6 @@
-use std::f64::consts::{E, PI};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use std::f64::consts::{E, PI};
 
 use crate::traits::{GetElementByName, GetResult, RemoveElementIfMaxValue};
 use crate::{
@@ -24,10 +24,14 @@ pub struct Interpreter {
 }
 
 impl Interpreter {
-    #[must_use] pub fn new(config: Config) -> Result<Self, CalcError> {
+    #[must_use]
+    pub fn new(config: Config) -> Result<Self, CalcError> {
         let speed_light: Decimal = 299_792_458.0.try_into().map_err(|_| CalcError::MathError)?; // СКОРОСТЬ СВЕТА
-        let acceleration_free_fall: Decimal = 9.80665.try_into().map_err(|_| CalcError::MathError)?; // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
-        let gravitational_constant: Decimal = 0.000_000_000_006_672_0.try_into().map_err(|_| CalcError::MathError)?; // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ
+        let acceleration_free_fall: Decimal =
+            9.80665.try_into().map_err(|_| CalcError::MathError)?; // СКОРОСТЬ СВОБОДНОГО ПАДЕНИЯ
+        let gravitational_constant: Decimal = 0.000_000_000_006_672_0
+            .try_into()
+            .map_err(|_| CalcError::MathError)?; // ГРАВИТАЦИОННАЯ ПОСТОЯННАЯ
         let pi: Decimal = PI.try_into().unwrap();
         let e: Decimal = E.try_into().unwrap();
 
@@ -60,7 +64,8 @@ impl Interpreter {
         }
     }
 
-    #[must_use] pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<Decimal, CalcError>)> {
+    #[must_use]
+    pub fn get_request_history(&self, to: usize) -> Vec<(String, Result<Decimal, CalcError>)> {
         self.request_history
             .iter()
             .rev()
