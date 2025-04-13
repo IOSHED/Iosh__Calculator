@@ -1,5 +1,5 @@
 {
-    "path_file_help": "/configurate/docs/README.ru.md",
+    "path_file_help": "./configurate/docs/README.ru.md",
     "commands": {
         "end": "/end",
         "help": "/help",
