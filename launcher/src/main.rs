@@ -21,8 +21,7 @@ fn main() -> std::io::Result<()> {
     create_readme(&docs_dir, "ru")?;
 
     println!("Launcher completed successfully! Please, push Enter for exist...");
-    let mut loop_input = String::new();
-    std::io::stdin().read_line(&mut loop_input)?;
+    let _ = std::io::stdin().read_line(&mut String::new())?;
     Ok(())
 }
 

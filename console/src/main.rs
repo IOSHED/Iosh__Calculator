@@ -4,17 +4,14 @@ use core::{get_ast, get_interpreter, get_result};
 use in_out::get_input;
 
 use crate::{in_out::MessageIO, printer::print_error};
+use crate::panic_hook::debug_panic_hook;
 
 mod in_out;
 mod printer;
+mod panic_hook;
 
 fn main() {
-    std::panic::set_hook(Box::new(|info| {
-        println!("Error: {:#?}", info);
-        println!("Please, push Enter for exist...");
-        let mut loop_input = String::new();
-        std::io::stdin().read_line(&mut loop_input).unwrap();
-    }));
+    std::panic::set_hook(Box::new(debug_panic_hook));
 
     let mut interpreter = get_interpreter();
 
