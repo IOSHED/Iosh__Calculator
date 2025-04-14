@@ -1,43 +1,42 @@
 
-
 # FRO Калькулятор #
 
 FRO - fast reliable only.
 
-Калькулятор призван облегчить работу с простыми выражениями. Он быстр, практичен, красив. В отличие от других калькуляторов, он ускоряет ввод пользователем уравнения или примера, которое нужно посчитать. Это достигается универсальным синтаксисом. Мы предлaгаем вам использовать для ввода данных в калькулятор только клавиатуру на ENG раскладке.
+The calculator is designed to simplify working with simple expressions. It is fast, practical, and beautiful. Unlike other calculators, it speeds up the user's input of the equation or example that needs to be calculated. This is achieved through a universal syntax. We suggest using the keyboard in ENG layout only for inputting data into the calculator.
 
-# Синтаксис #
+# Syntax #
 
-1. Упущенный знак "*".
+1. Missing `*` sign.
 
-    Такой ввод от пользователя не запаникует и выдаст верный овет:
+    Such input from the user will not panic and will provide the correct answer:
     ```
-    >>> 43(23 -  2) 
+    >>> 43(23 -  2)
     903
     ```
 
-    Другой пример:
+    Another example:
     ```
     >>> (23 -  2)  (54 - 52)
     42
     ```
 
-    Упущенный знак умножения работает не только со скобками но и с числами:
+    The missing multiplication sign works not only with brackets but also with numbers:
     ```
     >>> 34 5
     170
     ```
 
-    Поэтому будьте внимательны с такой записью:
+    So be careful with such notation:
     ```
     >>> 34 -5
     -170
     ```
-    Заметьте калькулятор не вычел элементы, а умножил! Ведь "-5" - число.
+    Note that the calculator did not subtract the elements, but multiplied! After all, `-5` is a number.
 
-2. Любое количество пробелов.
+2. Any number of spaces.
 
-    Калькулятор игнорирует все пробелы: хоть в начале, хоть в конце, хоть в середине. Поэтому данные примеры не паникуют, а выдают правильный резульат:
+    The calculator ignores all spaces: whether at the beginning, the end, or in the middle. Therefore, the following examples do not panic but give the correct result:
     ```
     >>>      4 5
     20
@@ -49,32 +48,32 @@ FRO - fast reliable only.
     -4
     ```
 
-3. Использование команд:
+3. Using commands:
 
-    - Команда "/help" выведет данное руководство.
-    - Команда "/end" закончит выполнение программы и сохранит ваши переменные, а так же вашу иторию.
-    - Команда "/history" выведет 10 последних строк таблицы из столбцов "Ввод" "Вывод". В таблицу не входит тот ввод, который получил ошибку вместо результата. Можно вывести все свои записи, добавив слово 'all'  к команде. Например, так: "/history all". Можно указать сколько последних записей вы хотите увидеть добавив число после команды вот так: "/history 5".
+    - The command `/help` will display this manual.
+    - The command `/end` will terminate the program execution and save your variables and your history.
+    - The command `/history` will display the last 10 lines of the table from the columns "Input" "Output". The table does not include any input that resulted in an error instead of a result. You can display all your entries by adding the word 'all' to the command. For example: "/history all". You can specify how many recent records you want to see by adding a number after the command like this: "/history 5".
 
-# Константы и Переменные #
+# Constants and Variables #
 
-1. В калькуляторе есть небольшое кооличество констант. Вот они:
+1. The calculator has a small number of constants. They are:
 
-    - PI - число пи.
-    - E - число Ейлера.
-    - c - скорость света.
-    - g - скорость свободного падения.
-    - G - гравитационная постоянная.
+    - PI - the number pi.
+    - E - the Euler number.
+    - c - the speed of light.
+    - g - the free fall acceleration.
+    - G - the gravitational constant.
 
-2. Консатанты можно использовать в вашем вводе:
+2. Constants can be used in your input:
 
     ```
     >>> PI
     3.141592653589793
     >>> PI * E - 5
     3.539734222673566
-    ``` 
+    ```
 
-3. Можно создать переменную, введя сначала название переменной (по которой она будет отзываться) и через равно её значение:
+3. You can create a variable by first entering the variable name (by which it will respond) and through the equals sign, its value:
     ```
     >>> a  = 10
     >>> d = a - 3
@@ -84,7 +83,7 @@ FRO - fast reliable only.
     7
     ```
 
-4. Переменные можно переопределять:
+4. Variables can be redefined:
     ```
     >>> home = 1
     >>> home = home - 1
@@ -92,32 +91,32 @@ FRO - fast reliable only.
     0
     ```
 
-5. Переменные так же можно использовать в выражениях:
+5. Variables can also be used in expressions:
     ```
     >>> (home - a + PI) (23 - 4 -4)
     -267.4778865099981
     ```
 
-# Функции #
+# Functions #
 
-1. В калькуляторе есть несколько функций, которые можно вызвать, написав её имя и в круглых скобочках указав её значения. Например:
+1. The calculator has several functions that can be called by writing its name and putting its values in parentheses. For example:
     ```
     >>>sin(2)
     0.03489949670250097
     ```
 
-2. Есть несколько функций в калькуляторе:
+2. There are several functions in the calculator:
 
-    - sin(градусы)
-    - cos(градусы)
-    - tg(градусы)
-    - ctg(градусы)
+    - sin(degrees)
+    - cos(degrees)
+    - tg(degrees)
+    - ctg(degrees)
 
-    - sqrt(число, из корого нужно вычислить квадратный корень; основание, по которому вычислиться корень)
-    - rt(число, из корого нужно вычислить квадратный корень; основание, по которому вычислиться корень)
-    - exp(число, кторое надо возвести в степень; степень, в кторое возведётся число)
+    - sqrt(number, from which to compute the square root; base on which the root is calculated)
+    - rt(number, from which to compute the square root; base on which the root is calculated)
+    - exp(number, which needs to be raised to a power; the power to which the number will be raised)
 
-3. Есть у фонкций не обязательные значени. Такими функциями являются "exp", "sqrt", "rt":
+3. Some functions have optional values. Such functions are "exp", "sqrt", "rt":
     ```
     >>> exp(2)
     4
@@ -126,9 +125,9 @@ FRO - fast reliable only.
     >>> sqrt(9)
     3
     ```
-    У таких функций необязательным полем явлется второе значение, по умолчанию оно ровно "2".
+    For such functions, the second value is optional, by default it is equal to "2".
 
-4. Аргументы функций гибки и могут содержать в себе пример:
+4. Function arguments are flexible and can contain an example:
     ```
     >>> exp(2 - 4)
     4
@@ -136,7 +135,7 @@ FRO - fast reliable only.
     256
     ```
 
-5. Функцции можно применять в примерах:
+5. Functions can be applied in examples:
     ```
     >>> 123 - 1 - 1 + sin(cos(a))
     121.01718729148051
