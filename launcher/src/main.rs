@@ -10,19 +10,7 @@ fn main() -> std::io::Result<()> {
 
     let user_json = Path::new(config_dir).join("user.json");
     let mut file = File::create(&user_json)?;
-    file.write_all(br#"{
-    "path_file_help": "./configurate/docs/README.en.md",
-    "commands": {
-        "end": "/end",
-        "help": "/help",
-        "history": "/history",
-        "empty_input": ""
-    },
-    
-    "output_line_history": 10,
-    "max_size_history": 50,
-    "max_number_variable": 50
-}"#)?;
+    file.write_all(USER_CONF.as_bytes())?;
 
     let docs_dir = Path::new(config_dir).join("docs");
     if !docs_dir.exists() {
@@ -32,7 +20,9 @@ fn main() -> std::io::Result<()> {
     create_readme(&docs_dir, "en")?;
     create_readme(&docs_dir, "ru")?;
 
-    println!("Launcher completed successfully!");
+    println!("Launcher completed successfully! Please, push Enter for exist...");
+    let mut loop_input = String::new();
+    std::io::stdin().read_line(&mut loop_input)?;
     Ok(())
 }
 
@@ -49,6 +39,20 @@ fn create_readme(docs_dir: &Path, lang: &str) -> std::io::Result<()> {
     file.write_all(content.as_bytes())?;
     Ok(())
 }
+
+const USER_CONF: &str = "{
+    \"path_file_help\": \"./configurate/docs/README.en.md\",
+    \"commands\": {
+        \"end\": \"/end\",
+        \"help\": \"/help\",
+        \"history\": \"/history\",
+        \"empty_input\": \"\"
+    },
+
+    \"output_line_history\": 10,
+    \"max_size_history\": 50,
+    \"max_number_variable\": 50
+}";
 
 const RU_DOCS: &str = "
 

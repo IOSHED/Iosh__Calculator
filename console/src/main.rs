@@ -9,13 +9,14 @@ mod in_out;
 mod printer;
 
 fn main() {
-    let interpreter = get_interpreter(print_error);
+    std::panic::set_hook(Box::new(|info| {
+        println!("Error: {:#?}", info);
+        println!("Please, push Enter for exist...");
+        let mut loop_input = String::new();
+        std::io::stdin().read_line(&mut loop_input).unwrap();
+    }));
 
-    if interpreter.is_none() {
-        loop {}
-    }
-
-    let mut interpreter = interpreter.unwrap();
+    let mut interpreter = get_interpreter();
 
     loop {
         let input = match get_input(&mut interpreter) {

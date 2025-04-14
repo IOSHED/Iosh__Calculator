@@ -30,22 +30,16 @@ pub fn load_interpreter() -> io::Result<Interpreter> {
 }
 
 #[must_use]
-pub fn get_interpreter(funct_caused_error: fn(CalcError) -> ()) -> Option<Interpreter> {
-    let instans = Config::get();
-    let config = instans.lock().unwrap();
+pub fn get_interpreter() -> Interpreter {
+    let instance = Config::get();
+    let config = instance.lock().unwrap();
 
     match load_interpreter() {
         Ok(mut i) => {
             i.config = config.get_config_for_interpreter();
-            Some(i)
+            i
         }
-        Err(_) => match Interpreter::new(config.get_config_for_interpreter()) {
-            Ok(i) => Some(i),
-            Err(err) => {
-                funct_caused_error(err);
-                None
-            }
-        },
+        Err(_) => Interpreter::new(config.get_config_for_interpreter()).expect("Unexpected error with id #000001"),
     }
 }
 
