@@ -6,7 +6,7 @@ use interpreter::errors::CalcError;
 
 use crate::printer::color;
 
-/// Печатает ошибку в виде "Error: передоваемая ошибка" красным цветом.
+/// Печатает ошибку в виде "Error: передаваемая ошибка" красным цветом.
 pub fn print_error(err: CalcError) {
     execute!(
         std::io::stdout(),

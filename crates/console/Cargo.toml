@@ -3,8 +3,7 @@ name = "console"
 description = "The application is console calculator"
 authors = ["Ivenin Valentin <iveninvala7@gmail.com>"]
 repository = "https://github.com/IOSHED/Iosh__Calculator/"
-readme = "../configurate/README.md"
-version = "1.0.0"
+version = "0.1.3"
 edition = "2021"
 license = "MIT"
 
@@ -16,8 +15,6 @@ build = "build.rs"
 [dependencies]
 interpreter = { path = "../interpreter" }
 core = { path = "../core" }
-
-libc = "0.2.80"
 
 regex = "1"
 

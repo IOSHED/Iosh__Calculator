@@ -2,10 +2,10 @@
 [workspace]
 resolver = "2"
 members = [
-    "console",
-    "interface",
-    "core",
-    "launcher",
+    "crates/console",
+    "crates/core",
+    "crates/launcher",
+    "crates/interpreter",
 ]
 
 

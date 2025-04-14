@@ -7,7 +7,6 @@ use interpreter::errors::CalcError;
 
 use crate::{in_out::read_file_help, printer::color};
 
-/// Печатает заголовок текста цветом (97, 50, 58) заглавными буквами.
 fn print_title(line: &str) {
     execute!(
         std::io::stdout(),
@@ -18,7 +17,6 @@ fn print_title(line: &str) {
     .unwrap();
 }
 
-/// Печатает строку `Color::Cyan`, а цифру стоящую перед ней `Color::Blue`.
 fn print_numeric(line: &str) {
     let split_line = line.split_at(2);
     execute!(
@@ -33,7 +31,6 @@ fn print_numeric(line: &str) {
     .unwrap();
 }
 
-/// Печатает строку цветом `Color::White`.
 fn print_line(line: &str) {
     execute!(
         std::io::stdout(),

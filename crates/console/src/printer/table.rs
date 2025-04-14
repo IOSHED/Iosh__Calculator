@@ -7,7 +7,7 @@ use interpreter::{errors::CalcError, history::History, interpreter::Interpreter}
 use rust_decimal::Decimal;
 
 /// Получение длины самого большого элемента в `History` - Vec<(String, Result<Decimal, `CalcError`>)>.
-/// Cчитается даже длина для второй части - Result, преобразованный в тип String.
+/// Cчетается даже длина для второй части - Result, преобразованный в тип String.
 /// Не считается длина элемента, если он является ошибкой, то есть Err(_).
 ///
 /// * `history` - сама история, по которой будет идти поиск.
@@ -58,7 +58,7 @@ impl<'a> Table<'a> {
     ///
     /// * `left_name` - имя левой колонки таблицы.
     /// * `right_name` - имя правой колонки таблицы.
-    /// * `history` - содержимое таблицы, котрое печатается в два столбика.
+    /// * `history` - содержимое таблицы, которое печатается в два столбика.
     pub fn new(
         left_name: &str, right_name: &str, history: &'a Vec<(String, Result<Decimal, CalcError>)>,
     ) -> Self {
@@ -113,14 +113,12 @@ impl<'a> Table<'a> {
         self
     }
 
-    /// Печатет шапку таблицы.
     pub fn print_table_header(self) -> Self {
         self.clone().print_table_title();
         self.clone().print_table_border();
         self
     }
 
-    /// Печатает строчку таблицы.
     pub fn print_table_line(self, res: Decimal, req_str: &str) -> Self {
         let width = self.width;
         execute!(
@@ -141,7 +139,6 @@ impl<'a> Table<'a> {
         self
     }
 
-    /// Печатает строчки таблицы.
     pub fn print_table_lines(self, to: usize) {
         for (_, (req_str, res)) in self.content.iter().enumerate().take(to) {
             match res {
