@@ -32,7 +32,7 @@ fn create_readme(docs_dir: &Path, lang: &str) -> std::io::Result<()> {
     let content = match lang {
         "en" => RU_DOCS,
         "ru" => EN_DOCS,
-        _ => ""
+        _ => "",
     };
 
     file.write_all(content.as_bytes())?;

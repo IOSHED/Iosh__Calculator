@@ -14,7 +14,6 @@ pub struct History {
 }
 
 impl History {
-
     #[must_use]
     pub fn new(input: &str, result: Result<Decimal, CalcError>) -> Self {
         History {

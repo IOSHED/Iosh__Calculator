@@ -39,7 +39,8 @@ pub fn get_interpreter() -> Interpreter {
             i.config = config.get_config_for_interpreter();
             i
         }
-        Err(_) => Interpreter::new(config.get_config_for_interpreter()).expect("Unexpected error with id #000001"),
+        Err(_) => Interpreter::new(config.get_config_for_interpreter())
+            .expect("Unexpected error with id #000001"),
     }
 }
 

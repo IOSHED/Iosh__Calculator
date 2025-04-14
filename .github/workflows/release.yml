@@ -4,7 +4,7 @@ name: Rust Release Workflow
 on:
   push:
     tags:
-      - 'v*'  # Запускается на создание нового тега, начинающегося с 'v'
+      - 'v*'
 
 jobs:
   build:
@@ -64,4 +64,3 @@ jobs:
           files: release/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

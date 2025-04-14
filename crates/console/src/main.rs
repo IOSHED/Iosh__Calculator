@@ -3,12 +3,12 @@ extern crate lazy_static;
 use core::{get_ast, get_interpreter, get_result};
 use in_out::get_input;
 
-use crate::{in_out::MessageIO, printer::print_error};
 use crate::panic_hook::debug_panic_hook;
+use crate::{in_out::MessageIO, printer::print_error};
 
 mod in_out;
-mod printer;
 mod panic_hook;
+mod printer;
 
 fn main() {
     std::panic::set_hook(Box::new(debug_panic_hook));
