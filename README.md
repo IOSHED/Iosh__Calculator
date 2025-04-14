@@ -1,6 +1,15 @@
 
-# FROCalculator
-FROC - fast reliable only calculator.
+<div align="center">
+
+<img src="./resources/logo.png" alt="AdEngine Logo" width="200" />  
+
+# FROCalculator 🐸
+
+_FROC - fast reliable only calculator_
+
+[![Rust](https://img.shields.io/badge/Rust-1.84+-orange.svg)](https://www.rust-lang.org/)
+
+</div>
 
 # Documentation for users
 
