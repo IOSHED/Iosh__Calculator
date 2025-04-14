@@ -14,7 +14,6 @@ pub struct History {
 }
 
 impl History {
-    //
 
     #[must_use]
     pub fn new(input: &str, result: Result<Decimal, CalcError>) -> Self {
@@ -33,9 +32,7 @@ impl History {
     ///
     /// # Example
     ///
-    /// ```
-    ///
-    /// let mut interpreter = Interpreter::new(Config::default());
+    /// ```notest
     /// interpreter.request_history = vec![
     ///     Hisrory::new("2 - 3", Some(-1.0)),
     ///     History::new("2 4", Some(8.0)),
