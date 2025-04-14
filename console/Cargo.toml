@@ -33,3 +33,4 @@ rust_decimal = "1.37.1"
 
 [build-dependencies]
 lalrpop = "0.20.0"
+winres = "0.1.12"
