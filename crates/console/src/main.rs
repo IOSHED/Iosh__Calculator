@@ -1,6 +1,6 @@
 extern crate lazy_static;
 
-use core::{get_ast, get_interpreter, get_result};
+use calc_core::{get_ast, get_interpreter, get_result};
 use in_out::get_input;
 
 use crate::panic_hook::debug_panic_hook;

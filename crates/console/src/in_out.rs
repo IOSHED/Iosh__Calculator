@@ -3,7 +3,7 @@ use std::{
     io::{self, Write},
 };
 
-use core::config::Config;
+use calc_core::config::Config;
 use interpreter::{errors::CalcError, interpreter::Interpreter};
 use lazy_static::lazy_static;
 use regex::{Captures, Regex};

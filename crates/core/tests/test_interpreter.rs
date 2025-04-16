@@ -1,4 +1,4 @@
-use core::parser;
+use calc_core::parser;
 use interpreter::{config::Config, interpreter::Interpreter};
 
 /// * expected - полученный ввод данных от пользвателя.

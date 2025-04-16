@@ -14,7 +14,7 @@ build = "build.rs"
 
 [dependencies]
 interpreter = { path = "../interpreter" }
-core = { path = "../core" }
+calc_core = { path = "../core" }
 
 regex = "1"
 

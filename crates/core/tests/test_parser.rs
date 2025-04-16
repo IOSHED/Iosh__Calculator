@@ -1,4 +1,4 @@
-use core::parser;
+use calc_core::parser;
 use rust_decimal::Decimal;
 
 /// * expected - полученное в результате парсинга значение.

@@ -1,5 +1,5 @@
 [package]
-name = "core"
+name = "calc_core"
 description = "The application is core calculator"
 authors = ["Ivenin Valentin <iveninvala7@gmail.com>"]
 repository = "https://github.com/IOSHED/Iosh__Calculator/"
