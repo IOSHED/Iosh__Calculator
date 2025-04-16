@@ -1,4 +1,3 @@
-
 <div align="center">
 
 <img src="./resources/logo.png" alt="AdEngine Logo" width="200" />  
@@ -17,7 +16,7 @@ Read the docs in [resources/docs](./resources/docs)
 
 # First launch for users
 
-1) Create directory in your computer for data of the calculator. 
+1) Create directory in your computer for data of the calculator.
 2) Launch file `launcher.exe`. This file created default user config and files docs.
 3) Use file `console.exe`. This file is calculator. You can rename it.
 
@@ -26,3 +25,12 @@ Read the docs in [resources/docs](./resources/docs)
 1) Install `windows toolkin` (if you want build project with icons on `.exe` files)
 2) Build and launch `launcher.exe`
 3) Build and use `console.exe`
+
+# How create new realize
+
+Use naming for version [SevVer](https://semver.org/)
+
+```commandline
+git tag vMajor.Minor.Patch
+git push origin vMajor.Minor.Patch
+```
