@@ -1,3 +1,5 @@
+#![allow(clippy::all)]
+
 pub mod config;
 
 use config::Config;
