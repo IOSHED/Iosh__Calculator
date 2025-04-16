@@ -192,7 +192,7 @@ impl Function for Exponentiation {
         let args_add_default =
             Self::check_len_args_or_stand_default_value(args, 2, vec![0.into(), 2.into()])?;
         let arg = Self::append_args(&args_add_default, calc)?;
-        Ok(arg[0].powf(arg[1])?)
+        arg[0].powf(arg[1])
     }
 }
 

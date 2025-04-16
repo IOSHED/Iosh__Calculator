@@ -24,7 +24,6 @@ pub struct Interpreter {
 }
 
 impl Interpreter {
-    #[must_use]
     pub fn new(config: Config) -> Result<Self, CalcError> {
         let speed_light: Decimal = 299_792_458.0.try_into().map_err(|_| CalcError::MathError)?; // СКОРОСТЬ СВЕТА
         let acceleration_free_fall: Decimal =

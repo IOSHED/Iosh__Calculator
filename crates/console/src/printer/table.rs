@@ -16,7 +16,7 @@ use rust_decimal::Decimal;
 /// # Example
 ///
 /// ```
-///
+/// 
 /// let history = vec![
 ///     ("2 + 2".to_string(), Ok(4.0)),
 ///     ("2*2".to_string(), Ok(4.0)),

@@ -1,7 +1,7 @@
 extern crate lalrpop;
 extern crate winres;
 
-const PATH_TO_ICON: &'static str = "../../resources/logo.ico";
+const PATH_TO_ICON: &str = "../../resources/logo.ico";
 
 fn main() {
     lalrpop::process_root().unwrap();
