@@ -1,4 +1,5 @@
 use core::parser;
+use rust_decimal::Decimal;
 
 /// * expected - полученное в результате парсинга значение.
 /// * received - ожидаемое значение.
@@ -42,21 +43,29 @@ macro_rules! testy_struct {
 
 #[test]
 fn number() {
-    testy_struct!(NumParser, "2", 2.0);
+    testy_struct!(NumParser, "2", Decimal::try_from(2.0).unwrap());
 
-    testy_struct!(NumParser, "-22.7", -22.7);
+    testy_struct!(NumParser, "-22.7", Decimal::try_from(-22.7).unwrap());
 
-    testy_struct!(NumParser, "+222.222222", 222.222222);
+    testy_struct!(
+        NumParser,
+        "+222.222222",
+        Decimal::try_from(222.222222).unwrap()
+    );
 
-    testy_struct!(NumParser, "222.", 222.);
+    testy_struct!(NumParser, "222.", Decimal::try_from(222.).unwrap());
 
-    testy_struct!(NumParser, "22,7", 22.7);
+    testy_struct!(NumParser, "22,7", Decimal::try_from(22.7).unwrap());
 
-    testy_struct!(NumParser, "+222,222222", 222.222222);
+    testy_struct!(
+        NumParser,
+        "+222,222222",
+        Decimal::try_from(222.222222).unwrap()
+    );
 
-    testy_struct!(NumParser, "222,", 222.0);
+    testy_struct!(NumParser, "222,", Decimal::try_from(222.0).unwrap());
 
-    testy_struct!(NumParser, "2,", 2.0);
+    testy_struct!(NumParser, "2,", Decimal::try_from(2.0).unwrap());
 }
 
 #[test]
@@ -72,28 +81,28 @@ fn term() {
 
 #[test]
 fn expr() {
-    testy!["11 * 22 + 33", "((11.0 * 22.0) + 33.0)"];
+    testy!["11 * 22 + 33", "((11 * 22) + 33)"];
 
-    testy!["(1 * 2) : 3", "((1.0 * 2.0) / 3.0)"];
+    testy!["(1 * 2) : 3", "((1 * 2) / 3)"];
 
-    testy!["(1 * 2) / 3", "((1.0 * 2.0) / 3.0)"];
+    testy!["(1 * 2) / 3", "((1 * 2) / 3)"];
 
-    testy!["(1 * 2) / (3 (43))", "((1.0 * 2.0) / (3.0 * 43.0))"];
+    testy!["(1 * 2) / (3 (43))", "((1 * 2) / (3 * 43))"];
 }
 
 #[test]
 fn func() {
-    testy!["sin(2)", "sin(2.0)"];
+    testy!["sin(2)", "sin(2)"];
 
-    testy!["cos(3 - 8)", "cos((3.0 - 8.0))"];
+    testy!["cos(3 - 8)", "cos((3 - 8))"];
 
-    testy!["sin(3 * 3 - 8)", "sin(((3.0 * 3.0) - 8.0))"];
+    testy!["sin(3 * 3 - 8)", "sin(((3 * 3) - 8))"];
 
-    testy!["sin(cos(2))", "sin(cos(2.0))"];
+    testy!["sin(cos(2))", "sin(cos(2))"];
 
-    testy!["sin(7) * 7", "(sin(7.0) * 7.0)"];
+    testy!["sin(7) * 7", "(sin(7) * 7)"];
 
-    testy!["sin(cos(2) * 7)", "sin((cos(2.0) * 7.0))"];
+    testy!["sin(cos(2) * 7)", "sin((cos(2) * 7))"];
 }
 
 #[test]
@@ -113,11 +122,11 @@ fn variable() {
 
 #[test]
 fn init_variable() {
-    testy!["name = 2", "name = 2.0"];
+    testy!["name = 2", "name = 2"];
 
-    testy!["name = 2 - 8", "name = (2.0 - 8.0)"];
+    testy!["name = 2 - 8", "name = (2 - 8)"];
 
-    testy!["name = 2 * 7", "name = (2.0 * 7.0)"];
+    testy!["name = 2 * 7", "name = (2 * 7)"];
 
-    testy!["name = (1 * 2) / 3", "name = ((1.0 * 2.0) / 3.0)"];
+    testy!["name = (1 * 2) / 3", "name = ((1 * 2) / 3)"];
 }
