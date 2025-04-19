@@ -3,8 +3,14 @@ name = "launcher"
 description = "The application is launcher for calculator"
 authors = ["Ivenin Valentin <iveninvala7@gmail.com>"]
 repository = "https://github.com/IOSHED/Iosh__Calculator/"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 license = "MIT"
 
 [dependencies]
+anyhow = "1.0"
+console = "0.15"
+dialoguer = "0.11.0"
+reqwest = { version = "0.12.15", features = ["blocking", "json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

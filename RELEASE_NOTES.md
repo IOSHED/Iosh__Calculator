@@ -1,2 +1,2 @@
-1) Add icon for `exe` file
-2) Support accuracy of calculations for `float` number
+1) Updated `launcher`. There is possible: editing default user settings, select language for documentation
+2) Fix matches documentation by language
