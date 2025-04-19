@@ -1,2 +1,2 @@
-1) Updated `launcher`. There is possible: editing default user settings, select language for documentation
-2) Fix matches documentation by language
+1) `launcher` now is multilingual.
+2) Support `RU` and `EN` langs.
