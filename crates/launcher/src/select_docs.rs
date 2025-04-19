@@ -3,6 +3,7 @@ use anyhow::Context;
 use dialoguer::theme::ColorfulTheme;
 use dialoguer::MultiSelect;
 use reqwest::blocking::get;
+use rust_i18n::t;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::fs::File;
@@ -25,7 +26,9 @@ pub fn select_languages(versions: &[String]) -> anyhow::Result<Vec<String>> {
     let theme = ColorfulTheme::default();
 
     let selections = MultiSelect::with_theme(&theme)
-        .with_prompt("Select the documentation languages (press the SPACE bar to multi select)")
+        .with_prompt(t!(
+            "Select the documentation languages (press the SPACE bar to multi select)"
+        ))
         .items(versions)
         .interact()?;
 
@@ -46,7 +49,7 @@ pub fn download_docs(lang: &str) -> anyhow::Result<String> {
 
 pub fn create_dir(path: &str) -> anyhow::Result<()> {
     if !Path::new(path).exists() {
-        fs::create_dir(path).with_context(|| format!("Couldn't create folder {}", path))?;
+        fs::create_dir(path).with_context(|| t!("Couldn't create folder %{path}", path = path))?;
     }
     Ok(())
 }

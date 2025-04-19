@@ -3,6 +3,7 @@ use serde::Serialize;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
+use rust_i18n::t;
 
 #[derive(Debug, Serialize)]
 pub struct UserConfig {
@@ -26,7 +27,7 @@ pub fn create_user_config(config_dir: &str, langs: &[String]) -> anyhow::Result<
     let mut config = create_default_config(langs);
 
     if Confirm::with_theme(&theme)
-        .with_prompt("Do you want to customize the settings?")
+        .with_prompt(t!("Do you want to customize the settings?"))
         .default(false)
         .interact()?
     {
@@ -55,53 +56,53 @@ fn create_default_config(langs: &[String]) -> UserConfig {
 
 fn customize_settings(config: &mut UserConfig, theme: &ColorfulTheme) -> anyhow::Result<()> {
     config.path_file_help = Input::with_theme(theme)
-        .with_prompt("Help file path")
+        .with_prompt(t!("Help file path"))
         .default(config.path_file_help.clone())
         .interact()?;
 
     config.output_line_history = Input::with_theme(theme)
-        .with_prompt("Number of history lines to show")
+        .with_prompt(t!("Number of history lines to show"))
         .default(config.output_line_history.to_string())
         .validate_with(|input: &String| match input.parse::<u8>() {
             Ok(_) => Ok(()),
-            Err(_) => Err("Please enter a number between 0 and 255"),
+            Err(_) => Err(t!("Please enter a number between 0 and 255")),
         })
         .interact()?
         .parse()?;
 
     config.max_size_history = Input::with_theme(theme)
-        .with_prompt("Maximum history size")
+        .with_prompt(t!("Maximum history size"))
         .default(config.max_size_history.to_string())
         .validate_with(|input: &String| match input.parse::<u8>() {
             Ok(_) => Ok(()),
-            Err(_) => Err("Please enter a number between 0 and 255"),
+            Err(_) => Err(t!("Please enter a number between 0 and 255")),
         })
         .interact()?
         .parse()?;
 
     config.max_number_variable = Input::with_theme(theme)
-        .with_prompt("Maximum number of variables")
+        .with_prompt(t!("Maximum number of variables"))
         .default(config.max_number_variable.to_string())
         .validate_with(|input: &String| match input.parse::<u8>() {
             Ok(_) => Ok(()),
-            Err(_) => Err("Please enter a number between 0 and 255"),
+            Err(_) => Err(t!("Please enter a number between 0 and 255")),
         })
         .interact()?
         .parse()?;
 
-    println!("\nCustomizing commands:");
+    println!("\n{}:", t!("Customizing commands"));
     config.commands.end = Input::with_theme(theme)
-        .with_prompt("Command to end session")
+        .with_prompt(t!("Command to end session"))
         .default(config.commands.end.clone())
         .interact()?;
 
     config.commands.help = Input::with_theme(theme)
-        .with_prompt("Command to show help")
+        .with_prompt(t!("Command to show help"))
         .default(config.commands.help.clone())
         .interact()?;
 
     config.commands.history = Input::with_theme(theme)
-        .with_prompt("Command to show history")
+        .with_prompt(t!("Command to show history"))
         .default(config.commands.history.clone())
         .interact()?;
 

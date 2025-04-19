@@ -1,11 +1,18 @@
+extern crate rust_i18n;
+
 mod select_docs;
 mod select_user_settings;
 mod settings;
 
 use anyhow::Result;
 use console::style;
+use rust_i18n::t;
+
+rust_i18n::i18n!("locales");
 
 fn main() -> Result<()> {
+    rust_i18n::set_locale("ru");
+
     println!(
         "{}",
         style("FRO Calculator Launcher").bold().blue().underlined()
@@ -31,11 +38,11 @@ fn main() -> Result<()> {
 
     println!(
         "\n{}",
-        style("The installation has been completed successfully!")
+        style(t!("The installation has been completed successfully!"))
             .bold()
             .green()
     );
-    println!("{}", style("Press Enter to exit...").dim());
+    println!("{}", style(t!("Press Enter to exit...")).dim());
     let _ = std::io::stdin().read_line(&mut String::new())?;
 
     Ok(())
