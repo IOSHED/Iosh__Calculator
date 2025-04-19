@@ -10,7 +10,7 @@ use anyhow::Result;
 use console::style;
 use rust_i18n::t;
 
-rust_i18n::i18n!("locales");
+rust_i18n::i18n!();
 
 fn main() -> Result<()> {
     println!(

@@ -54,4 +54,8 @@ The installation has been completed successfully!:
   en: "The installation has been completed successfully!"
   ru: "Установка завершена успешно!"
 
+Do you want to customize commands?:
+  en: "Do you want to customize commands?"
+  ru: "Вы хотите настроить команды?"
+
 _version: 2

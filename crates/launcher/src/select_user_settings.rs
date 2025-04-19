@@ -1,9 +1,10 @@
+use crate::settings::DEFAULT_LANGUAGE;
 use dialoguer::{theme::ColorfulTheme, Confirm, Input};
+use rust_i18n::t;
 use serde::Serialize;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
-use rust_i18n::t;
 
 #[derive(Debug, Serialize)]
 pub struct UserConfig {
@@ -22,6 +23,29 @@ pub struct Commands {
     empty_input: String,
 }
 
+impl Default for UserConfig {
+    fn default() -> Self {
+        Self {
+            path_file_help: format!("./configurate/docs/README.{DEFAULT_LANGUAGE}.md"),
+            commands: Commands::default(),
+            output_line_history: 10,
+            max_size_history: 50,
+            max_number_variable: 50,
+        }
+    }
+}
+
+impl Default for Commands {
+    fn default() -> Self {
+        Self {
+            end: "/end".to_string(),
+            help: "/help".to_string(),
+            history: "/history".to_string(),
+            empty_input: "".to_string(),
+        }
+    }
+}
+
 pub fn create_user_config(config_dir: &str, langs: &[String]) -> anyhow::Result<()> {
     let theme = ColorfulTheme::default();
     let mut config = create_default_config(langs);
@@ -38,19 +62,14 @@ pub fn create_user_config(config_dir: &str, langs: &[String]) -> anyhow::Result<
 }
 
 fn create_default_config(langs: &[String]) -> UserConfig {
-    let default_lang = langs.first().map(|s| s.as_str()).unwrap_or("en");
+    let default_lang = langs
+        .first()
+        .map(|s| s.as_str())
+        .unwrap_or(DEFAULT_LANGUAGE);
 
     UserConfig {
         path_file_help: format!("./configurate/docs/README.{}.md", default_lang),
-        commands: Commands {
-            end: "/end".to_string(),
-            help: "/help".to_string(),
-            history: "/history".to_string(),
-            empty_input: "".to_string(),
-        },
-        output_line_history: 10,
-        max_size_history: 50,
-        max_number_variable: 50,
+        ..Default::default()
     }
 }
 
@@ -90,22 +109,32 @@ fn customize_settings(config: &mut UserConfig, theme: &ColorfulTheme) -> anyhow:
         .interact()?
         .parse()?;
 
-    println!("\n{}:", t!("Customizing commands"));
-    config.commands.end = Input::with_theme(theme)
-        .with_prompt(t!("Command to end session"))
-        .default(config.commands.end.clone())
-        .interact()?;
+    customize_command(config, theme)?;
 
-    config.commands.help = Input::with_theme(theme)
-        .with_prompt(t!("Command to show help"))
-        .default(config.commands.help.clone())
-        .interact()?;
+    Ok(())
+}
 
-    config.commands.history = Input::with_theme(theme)
-        .with_prompt(t!("Command to show history"))
-        .default(config.commands.history.clone())
-        .interact()?;
+fn customize_command(config: &mut UserConfig, theme: &ColorfulTheme) -> anyhow::Result<()> {
+    if Confirm::with_theme(theme)
+        .with_prompt(t!("Do you want to customize commands?"))
+        .default(false)
+        .interact()?
+    {
+        config.commands.end = Input::with_theme(theme)
+            .with_prompt(t!("Command to end session"))
+            .default(config.commands.end.clone())
+            .interact()?;
 
+        config.commands.help = Input::with_theme(theme)
+            .with_prompt(t!("Command to show help"))
+            .default(config.commands.help.clone())
+            .interact()?;
+
+        config.commands.history = Input::with_theme(theme)
+            .with_prompt(t!("Command to show history"))
+            .default(config.commands.history.clone())
+            .interact()?;
+    }
     Ok(())
 }
 
