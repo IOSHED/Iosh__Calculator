@@ -1,4 +1,6 @@
+use crate::settings::DEFAULT_LANGUAGE;
 use dialoguer::{theme::ColorfulTheme, Confirm, Input};
+use rust_i18n::t;
 use serde::Serialize;
 use std::fs::File;
 use std::io::Write;
@@ -21,12 +23,35 @@ pub struct Commands {
     empty_input: String,
 }
 
+impl Default for UserConfig {
+    fn default() -> Self {
+        Self {
+            path_file_help: format!("./configurate/docs/README.{DEFAULT_LANGUAGE}.md"),
+            commands: Commands::default(),
+            output_line_history: 10,
+            max_size_history: 50,
+            max_number_variable: 50,
+        }
+    }
+}
+
+impl Default for Commands {
+    fn default() -> Self {
+        Self {
+            end: "/end".to_string(),
+            help: "/help".to_string(),
+            history: "/history".to_string(),
+            empty_input: "".to_string(),
+        }
+    }
+}
+
 pub fn create_user_config(config_dir: &str, langs: &[String]) -> anyhow::Result<()> {
     let theme = ColorfulTheme::default();
     let mut config = create_default_config(langs);
 
     if Confirm::with_theme(&theme)
-        .with_prompt("Do you want to customize the settings?")
+        .with_prompt(t!("Do you want to customize the settings?"))
         .default(false)
         .interact()?
     {
@@ -37,74 +62,79 @@ pub fn create_user_config(config_dir: &str, langs: &[String]) -> anyhow::Result<
 }
 
 fn create_default_config(langs: &[String]) -> UserConfig {
-    let default_lang = langs.first().map(|s| s.as_str()).unwrap_or("en");
+    let default_lang = langs
+        .first()
+        .map(|s| s.as_str())
+        .unwrap_or(DEFAULT_LANGUAGE);
 
     UserConfig {
         path_file_help: format!("./configurate/docs/README.{}.md", default_lang),
-        commands: Commands {
-            end: "/end".to_string(),
-            help: "/help".to_string(),
-            history: "/history".to_string(),
-            empty_input: "".to_string(),
-        },
-        output_line_history: 10,
-        max_size_history: 50,
-        max_number_variable: 50,
+        ..Default::default()
     }
 }
 
 fn customize_settings(config: &mut UserConfig, theme: &ColorfulTheme) -> anyhow::Result<()> {
     config.path_file_help = Input::with_theme(theme)
-        .with_prompt("Help file path")
+        .with_prompt(t!("Help file path"))
         .default(config.path_file_help.clone())
         .interact()?;
 
     config.output_line_history = Input::with_theme(theme)
-        .with_prompt("Number of history lines to show")
+        .with_prompt(t!("Number of history lines to show"))
         .default(config.output_line_history.to_string())
         .validate_with(|input: &String| match input.parse::<u8>() {
             Ok(_) => Ok(()),
-            Err(_) => Err("Please enter a number between 0 and 255"),
+            Err(_) => Err(t!("Please enter a number between 0 and 255")),
         })
         .interact()?
         .parse()?;
 
     config.max_size_history = Input::with_theme(theme)
-        .with_prompt("Maximum history size")
+        .with_prompt(t!("Maximum history size"))
         .default(config.max_size_history.to_string())
         .validate_with(|input: &String| match input.parse::<u8>() {
             Ok(_) => Ok(()),
-            Err(_) => Err("Please enter a number between 0 and 255"),
+            Err(_) => Err(t!("Please enter a number between 0 and 255")),
         })
         .interact()?
         .parse()?;
 
     config.max_number_variable = Input::with_theme(theme)
-        .with_prompt("Maximum number of variables")
+        .with_prompt(t!("Maximum number of variables"))
         .default(config.max_number_variable.to_string())
         .validate_with(|input: &String| match input.parse::<u8>() {
             Ok(_) => Ok(()),
-            Err(_) => Err("Please enter a number between 0 and 255"),
+            Err(_) => Err(t!("Please enter a number between 0 and 255")),
         })
         .interact()?
         .parse()?;
 
-    println!("\nCustomizing commands:");
-    config.commands.end = Input::with_theme(theme)
-        .with_prompt("Command to end session")
-        .default(config.commands.end.clone())
-        .interact()?;
+    customize_command(config, theme)?;
 
-    config.commands.help = Input::with_theme(theme)
-        .with_prompt("Command to show help")
-        .default(config.commands.help.clone())
-        .interact()?;
+    Ok(())
+}
 
-    config.commands.history = Input::with_theme(theme)
-        .with_prompt("Command to show history")
-        .default(config.commands.history.clone())
-        .interact()?;
+fn customize_command(config: &mut UserConfig, theme: &ColorfulTheme) -> anyhow::Result<()> {
+    if Confirm::with_theme(theme)
+        .with_prompt(t!("Do you want to customize commands?"))
+        .default(false)
+        .interact()?
+    {
+        config.commands.end = Input::with_theme(theme)
+            .with_prompt(t!("Command to end session"))
+            .default(config.commands.end.clone())
+            .interact()?;
 
+        config.commands.help = Input::with_theme(theme)
+            .with_prompt(t!("Command to show help"))
+            .default(config.commands.help.clone())
+            .interact()?;
+
+        config.commands.history = Input::with_theme(theme)
+            .with_prompt(t!("Command to show history"))
+            .default(config.commands.history.clone())
+            .interact()?;
+    }
     Ok(())
 }
 

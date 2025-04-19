@@ -1,39 +1,29 @@
-use crate::settings::{DOCS_BASE_URL, DOCS_MANIFEST_URL};
+use crate::settings::{DOCS_BASE_URL, SUPPORTED_LANGUAGES};
 use anyhow::Context;
 use dialoguer::theme::ColorfulTheme;
 use dialoguer::MultiSelect;
 use reqwest::blocking::get;
-use serde::{Deserialize, Serialize};
+use rust_i18n::t;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct DocConfig {
-    pub versions: Vec<String>,
-}
-
-pub fn get_doc_versions() -> anyhow::Result<DocConfig> {
-    let response = get(DOCS_MANIFEST_URL)?.error_for_status()?.json()?;
-
-    Ok(response)
-}
-
-
-pub fn select_languages(versions: &[String]) -> anyhow::Result<Vec<String>> {
+pub fn select_languages() -> anyhow::Result<Vec<String>> {
     let theme = ColorfulTheme::default();
 
     let selections = MultiSelect::with_theme(&theme)
-        .with_prompt("Select the documentation languages (press the SPACE bar to multi select)")
-        .items(versions)
+        .with_prompt(t!(
+            "Select the documentation languages (press the SPACE bar to multi select)"
+        ))
+        .items(SUPPORTED_LANGUAGES.clone().as_slice())
         .interact()?;
 
-    Ok(versions
+    Ok(SUPPORTED_LANGUAGES
         .iter()
         .enumerate()
         .filter(|(i, _)| selections.contains(i))
-        .map(|(_, lang)| lang.clone())
+        .map(|(_, lang)| lang.to_string())
         .collect())
 }
 
@@ -46,7 +36,7 @@ pub fn download_docs(lang: &str) -> anyhow::Result<String> {
 
 pub fn create_dir(path: &str) -> anyhow::Result<()> {
     if !Path::new(path).exists() {
-        fs::create_dir(path).with_context(|| format!("Couldn't create folder {}", path))?;
+        fs::create_dir(path).with_context(|| t!("Couldn't create folder %{path}", path = path))?;
     }
     Ok(())
 }

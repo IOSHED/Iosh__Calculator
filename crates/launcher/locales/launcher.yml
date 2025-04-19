@@ -1,0 +1,61 @@
+Command to end session:
+  en: "Command to end session"
+  ru: "Команда для сохранения и выхода"
+
+Command to show help:
+  en: "Command to show help"
+  ru: "Команда для чтения документации"
+
+Command to show history:
+  en: "Command to show history"
+  ru: "Команда для показа истории"
+
+Couldn't create folder %{path}:
+  en: "Couldn't create folder %{path}"
+  ru: "Не удалось создать папку %{path}"
+
+Customizing commands:
+  en: "Customizing commands"
+  ru: "Настройка команд"
+
+Do you want to customize the settings?:
+  en: "Do you want to customize the settings?"
+  ru: "Вы хотите настроить параметры?"
+
+Help file path:
+  en: "Help file path"
+  ru: "Путь к файлу справки"
+
+Maximum history size:
+  en: "Maximum history size"
+  ru: "Максимальный размер истории"
+
+Maximum number of variables:
+  en: "Maximum number of variables"
+  ru: "Максимальное количество переменных"
+
+Number of history lines to show:
+  en: "Number of history lines to show"
+  ru: "Количество строк истории для показа"
+
+Please enter a number between 0 and 255:
+  en: "Please enter a number between 0 and 255"
+  ru: "Пожалуйста, введите число от 0 до 255"
+
+Press Enter to exit...:
+  en: "Press Enter to exit..."
+  ru: "Нажмите Enter для выхода..."
+
+Select the documentation languages (press the SPACE bar to multi select):
+  en: "Select the documentation languages (press the SPACE bar to multi select)"
+  ru: "Выберите языки документации (нажмите пробел для множественного выбора)"
+
+The installation has been completed successfully!:
+  en: "The installation has been completed successfully!"
+  ru: "Установка завершена успешно!"
+
+Do you want to customize commands?:
+  en: "Do you want to customize commands?"
+  ru: "Вы хотите настроить команды?"
+
+_version: 2
